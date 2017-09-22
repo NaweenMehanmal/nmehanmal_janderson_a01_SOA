@@ -15,8 +15,11 @@ namespace nmehanmal_janderson
         public const string xmlns_xsd  = "http://www.w3.org/2001/XMLSchema";
         public const string xmlns_xsi  = "http://www.w3.org/2001/XMLSchema-instance";
 
+        public List<string> WebServiceList { get; set; }
+
         public SoapClient()
         {
+            WebServiceList = new List<string>();
         }
 
 

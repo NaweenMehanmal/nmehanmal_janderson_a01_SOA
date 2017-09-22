@@ -21,7 +21,7 @@ namespace nmehanmal_janderson
             origConfigFile = new XmlDocument();
             httpSoapClient = new SoapClient();
 
-            origConfigFile.Load("WSDLConfiguration.xml"); //Obtain XML config file
+            origConfigFile.Load("../../WSDLConfiguration.xml"); //Obtain XML config file
 
             //Fill the Combobox dropdown with the available web services
             httpSoapClient.GetWebServicesAndMethods(origConfigFile);   
