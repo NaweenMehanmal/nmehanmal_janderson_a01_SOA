@@ -9,21 +9,14 @@ namespace nmehanmal_janderson
 {
     class SoapClient
     {
-        //Collections
-        public List<string> WebServiceList { get; set; }
-        public Dictionary<string, List<string>> WebServiceMethods { get; set; }
 
         //const
-        public const string xmlns_soap = "http://www.w3.org/2003/05/soap-envelope/"; //"http://schemas.xmlsoap.org/soap/envelope/"
+        public const string xmlns_soap = "http://schemas.xmlsoap.org/soap/envelope/";
         public const string xmlns_xsd  = "http://www.w3.org/2001/XMLSchema";
         public const string xmlns_xsi  = "http://www.w3.org/2001/XMLSchema-instance";
 
-        //public const string soap_encodingSytle = "http://www.w3.org/2003/05/soap-encoding";
-
         public SoapClient()
         {
-            this.WebServiceList = new List<string>();
-            this.WebServiceMethods = new Dictionary<string, List<string>>();
         }
 
 
@@ -33,18 +26,19 @@ namespace nmehanmal_janderson
             XmlDocument soapEnvXml = new XmlDocument();
             bool isSoapMessageGenerated = false;
             string soapActionUrl = "";
+            string location = "";
             string url = "";
 
             try
             {
                 foreach (XmlNode defNode in xmlDoc.GetElementsByTagName("definition"))
                 {
-                    url = defNode.Attributes["targetNamespace"].Value;
-
                     foreach (XmlNode serviceNode in defNode.SelectNodes("service"))
                     {
                         if (serviceNode.Attributes["name"].Value == serviceName)
                         {
+                            url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
+                            location = serviceNode.Attributes["location"].Value;
                             soapEnvXml = GenerateSoapResponseTemplate(serviceNode, url, methodName, paramMap, out soapActionUrl);
                             isSoapMessageGenerated = true;
                             break;
@@ -67,11 +61,11 @@ namespace nmehanmal_janderson
             try
             {
                 //Http Related
-                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(location);
+                httpRequest.Headers.Add(@"SOAP:Action");
+                httpRequest.ContentType = "text/xml;charset=\"utf-8\"";
                 httpRequest.Accept = "text/xml";
                 httpRequest.Method = "POST";
-                httpRequest.ContentType = "text/xml;charset=\"utf-8\"";
-                httpRequest.Headers.Add("SOAPAction", soapActionUrl);
 
                 //request
                 using (Stream stream = httpRequest.GetRequestStream())
@@ -86,6 +80,10 @@ namespace nmehanmal_janderson
                     {
                         string result = reader.ReadToEnd();
                         MessageBox.Show(result);
+
+                        //JER THIS IS YOUR GROUND
+                        //You can parse the response XML because we know what the return body is called (look at return_method)
+
                     }
                 }
             }
@@ -100,6 +98,8 @@ namespace nmehanmal_janderson
 
         public XmlDocument GenerateSoapResponseTemplate(XmlNode xNode, string targetURL, string methodName, Dictionary<string, object> paramMap, out string soapAction)
         {
+            soapAction = "";
+
             XmlDocument retSoapXml = new XmlDocument(); //New XML SOAP
             XmlDeclaration xmlDeclaration = retSoapXml.CreateXmlDeclaration("1.0", "UTF-8", null);
             XmlElement parent = retSoapXml.DocumentElement;
@@ -135,15 +135,16 @@ namespace nmehanmal_janderson
                 paramMethod.AppendChild(paramVal);
             }         
 
-            retSoapXml.Save(@"G:\test.xml");
+            //retSoapXml.Save(@"G:\test.xml");
 
             //Get the soapAction 
-            //foreach(XmlNode n in )
-            //{
-
-            //}
-
-            soapAction = ""; //CHANGE
+            foreach (XmlNode n in xNode.SelectNodes("method"))
+            {
+                if(n.Attributes["name"].Value == methodName)
+                {
+                    soapAction = n.Attributes["soapAction"].Value;
+                }
+            }
 
             return retSoapXml;
         }
@@ -161,11 +162,6 @@ namespace nmehanmal_janderson
                 }
             }
         }
-
-    }
-
-    struct SoapDefinition
-    {
 
     }
 
