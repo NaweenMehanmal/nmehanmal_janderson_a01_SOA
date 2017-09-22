@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
 	<definition targetNamespace="https://www.w3schools.com/xml/">
-		<service name="TempConvertSoap">
+		<service name="TempConvertSoap" location="http://www.w3schools.com/xml/tempconvert.asmx">
 			<method name="FahrenheitToCelsius" soapAction="https://www.w3schools.com/xml/FahrenheitToCelsius">
 				<param  name="Fahrenheit" type="string"></param>
 				<return_method name="FahrenheitToCelsiusResponse">
@@ -15,10 +15,18 @@
 				</return_method>
 			</method>
 		</service>
-		<service name="service2"></service>
 		<service name="service3"></service>
 	</definition>
-	<definition></definition>
+	<definition targetNamespace="http://webservices.gcomputer.net/">
+		<service name="KnowledgeLeak" location="http://www.gcomputer.net/webservices/knowledge.asmx">
+			<method name="Knowledge" soapAction="http://webservices.gcomputer.net/Knowledge">
+				<param  name="generation" type="int"></param>
+				<return_method name="KnowledgeResponse">
+					<return_param name="KnowledgeResult" type="double"></return_param>
+				</return_method>
+			</method>
+		</service>
+	</definition>
 	<definition></definition>
 	<definition></definition>
 </serviceConfig>
