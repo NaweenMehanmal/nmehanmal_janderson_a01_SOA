@@ -6,26 +6,31 @@ namespace nmehanmal_janderson
     public partial class Form1 : Form
     {
         private XmlDocument origConfigFile;
+        private SoapClient  httpSoapClient;
 
         public Form1()
         {
             InitializeComponent();
 
+            //Disable button
+            bHttpPostButton.Enabled = false;
+
             origConfigFile = new XmlDocument();
-            XmlConfigParser xmlConfig  = new XmlConfigParser();
+            httpSoapClient = new SoapClient();
 
             origConfigFile.Load("WSDLConfiguration.xml"); //Obtain XML config file
 
             //Fill the Combobox dropdown with the available web services
-            xmlConfig.GetWebServicesAndMethods(origConfigFile);
+            httpSoapClient.GetWebServicesAndMethods(origConfigFile);   
 
             //Load dropdown with list
-            cServiceNames.DataSource = xmlConfig.WebServiceList;
+            cServiceNames.DataSource = httpSoapClient.WebServiceList;
 
-            //Populate radio buttons full of method names
+            httpSoapClient.SoapRequestAndResponse("", null);
 
-            string xmlComments = origConfigFile.InnerXml;
-            
+
+            //string xmlComments = origConfigFile.InnerXml;
+
             ////Test for now
             //SOAPXMLSTRING =
             //"<? xml version = \"1.0\" encoding = \"utf-8\" ?>" + 
@@ -45,7 +50,8 @@ namespace nmehanmal_janderson
         public void GenerateRadioButtonsForMethods()
         {
             //Clean out layout
-            layoutMethodNames.Controls.Clear(); 
+            layoutMethodNames.Controls.Clear();
+            layoutParameterNames.Controls.Clear();
 
             //Insert method names as radio buttons to choose from
             XmlNode node = origConfigFile.SelectSingleNode(string.Format("//*[@name = '{0}']", cServiceNames.Text.ToString()));
@@ -69,12 +75,15 @@ namespace nmehanmal_janderson
 
                         textLabel.Text = innerNode.Attributes["name"].Value + ':';
 
+                        //Add controls to layout
                         layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox });
                     }
+
+                    bHttpPostButton.Enabled = true; //True because Method is chosen and Parameters are shown
                 };
 
                 layoutMethodNames.Controls.Add(rButton);
-            }
+            }        
         }
 
 
@@ -86,11 +95,20 @@ namespace nmehanmal_janderson
         {
             //Generate the methods 
             GenerateRadioButtonsForMethods();
+
+            //Fresh start, disable post button
+            bHttpPostButton.Enabled = false; 
         }
 
 
-       
-
+        //
+        //Button click event
+        //
+        private void bHttpPostButton_Click(object sender, System.EventArgs e)
+        {
+            //Post SOAP message
+            httpSoapClient.SoapRequestAndResponse("", null);
+        }
 
 
     }
