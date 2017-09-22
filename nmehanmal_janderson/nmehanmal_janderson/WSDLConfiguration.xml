@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<serviceConfig>
+	<definition>
+		<service name="TempConvertSoap" url="">
+			<method name="FahrenheitToCelsius">
+				<param  name="Fahrenheit" type="string"></param>
+				<return name="FahrenheitToCelsiusResult" type="string"></return>
+			</method>
+			<method name="CelsiusToFahrenheit">
+				<param  name="Celsius" type="string"></param>
+				<return name="CelsiusToFahrenheitResult" type="string"></return>
+			</method>
+		</service>
+		<service name="service2"></service>
+	</definition>
+	<definition></definition>
+	<definition></definition>
+	<definition></definition>
+</serviceConfig>
