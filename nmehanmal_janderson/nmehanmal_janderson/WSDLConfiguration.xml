@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
-	<definition>
+	<definition targetNamespace="https://www.w3schools.com/xml/">
 		<service name="TempConvertSoap">
 			<method name="FahrenheitToCelsius" soapAction="https://www.w3schools.com/xml/FahrenheitToCelsius">
 				<param  name="Fahrenheit" type="string"></param>

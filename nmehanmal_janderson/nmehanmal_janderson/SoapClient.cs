@@ -30,18 +30,48 @@ namespace nmehanmal_janderson
         public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
         {
             //Generate the SOAP request message body
-            XmlDocument soapEnvXml = new XmlDocument();  
-            soapEnvXml = GenerateSoapResponseTemplate(xmlDoc, methodName, paramMap);
+            XmlDocument soapEnvXml = new XmlDocument();
+            bool isSoapMessageGenerated = false;
+            string soapActionUrl = "";
+            string url = "";
+
+            try
+            {
+                foreach (XmlNode defNode in xmlDoc.GetElementsByTagName("definition"))
+                {
+                    url = defNode.Attributes["targetNamespace"].Value;
+
+                    foreach (XmlNode serviceNode in defNode.SelectNodes("service"))
+                    {
+                        if (serviceNode.Attributes["name"].Value == serviceName)
+                        {
+                            soapEnvXml = GenerateSoapResponseTemplate(serviceNode, url, methodName, paramMap, out soapActionUrl);
+                            isSoapMessageGenerated = true;
+                            break;
+                        }
+                    }
+
+                    if (isSoapMessageGenerated == true)
+                    {
+                        break;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                //Generating soap message failed
+                MessageBox.Show(ex.Message);
+            }     
 
             //Through an HTTP Post request, sent the data
             try
             {
                 //Http Related
-                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create("");
+                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpRequest.Accept = "text/xml";
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = "text/xml;charset=\"utf-8\"";
-                httpRequest.Headers.Add("SOAPAction", "");
+                httpRequest.Headers.Add("SOAPAction", soapActionUrl);
 
                 //request
                 using (Stream stream = httpRequest.GetRequestStream())
@@ -64,12 +94,11 @@ namespace nmehanmal_janderson
                 MessageBox.Show(ex.Message);
             }
             
-            return;
         }
 
 
 
-        public XmlDocument GenerateSoapResponseTemplate(XmlDocument configXml, string methodName, Dictionary<string, object> paramMap)
+        public XmlDocument GenerateSoapResponseTemplate(XmlNode xNode, string targetURL, string methodName, Dictionary<string, object> paramMap, out string soapAction)
         {
             XmlDocument retSoapXml = new XmlDocument(); //New XML SOAP
             XmlDeclaration xmlDeclaration = retSoapXml.CreateXmlDeclaration("1.0", "UTF-8", null);
@@ -91,18 +120,30 @@ namespace nmehanmal_janderson
             /* SOAP Method Name */
 
             XmlElement soapMethod = retSoapXml.CreateElement(string.Empty, methodName, string.Empty);
-            soapMethod.SetAttribute("xmlns", "random_url"); //XML instance
+            soapMethod.SetAttribute("xmlns", targetURL); //XML instance
             soapBody.AppendChild(soapMethod);
 
             /* SOAP Parameter Name(s) */
 
-            XmlElement paramMethod = retSoapXml.CreateElement(string.Empty, "random_parameter", string.Empty);
-            soapMethod.AppendChild(paramMethod);
+            foreach (KeyValuePair<string, object> entry in paramMap)
+            {
+                // do something with entry.Value or entry.Key
+                XmlElement paramMethod = retSoapXml.CreateElement(string.Empty, entry.Key, string.Empty);
+                soapMethod.AppendChild(paramMethod);
 
-            XmlText text1 = retSoapXml.CreateTextNode("random text");
-            paramMethod.AppendChild(text1);
+                XmlText paramVal = retSoapXml.CreateTextNode(entry.Value.ToString());
+                paramMethod.AppendChild(paramVal);
+            }         
 
-            retSoapXml.Save(@"C:\Users\Nmehanmal0925\Desktop\");
+            retSoapXml.Save(@"G:\test.xml");
+
+            //Get the soapAction 
+            //foreach(XmlNode n in )
+            //{
+
+            //}
+
+            soapAction = ""; //CHANGE
 
             return retSoapXml;
         }

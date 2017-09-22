@@ -90,7 +90,7 @@ namespace nmehanmal_janderson
         //
         //Button click event
         //
-        private void bHttpPostButton_Click(object sender, System.EventArgs e)
+        private void bHttpPostButton_Click(object sender, EventArgs e)
         {
             //Get selected method
             var rButtonChecked = layoutMethodNames.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
