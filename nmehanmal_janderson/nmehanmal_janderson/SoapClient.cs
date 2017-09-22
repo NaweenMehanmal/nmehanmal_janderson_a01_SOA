@@ -27,7 +27,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public void SoapRequestAndResponse(string url, XmlDocument xmlDoc, string methodName, Dictionary<string, object> paramMap)
+        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();  
@@ -37,7 +37,7 @@ namespace nmehanmal_janderson
             try
             {
                 //Http Related
-                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create("");
                 httpRequest.Accept = "text/xml";
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = "text/xml;charset=\"utf-8\"";
@@ -102,7 +102,7 @@ namespace nmehanmal_janderson
             XmlText text1 = retSoapXml.CreateTextNode("random text");
             paramMethod.AppendChild(text1);
 
-            retSoapXml.Save(@"C:\Users\Naween\Desktop\test");
+            retSoapXml.Save(@"C:\Users\Nmehanmal0925\Desktop\");
 
             return retSoapXml;
         }

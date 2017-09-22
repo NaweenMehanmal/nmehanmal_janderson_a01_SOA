@@ -1,5 +1,8 @@
 ﻿using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace nmehanmal_janderson
 {
@@ -25,24 +28,6 @@ namespace nmehanmal_janderson
 
             //Load dropdown with list
             cServiceNames.DataSource = httpSoapClient.WebServiceList;
-
-            httpSoapClient.SoapRequestAndResponse("", null);
-
-
-            //string xmlComments = origConfigFile.InnerXml;
-
-            ////Test for now
-            //SOAPXMLSTRING =
-            //"<? xml version = \"1.0\" encoding = \"utf-8\" ?>" + 
-            //"< soap : Envelope xmlns: xsi = \"http://www.w3.org/2001/XMLSchema-instance\" xmlns: xsd = \"http://www.w3.org/2001/XMLSchema\" xmlns: soap = \"http://schemas.xmlsoap.org/soap/envelope/\" >" +            
-            //"< soap:Body >" +
-            //"< GetAirportInformationByCountry xmlns = \"http://www.webserviceX.NET\" >" +
-            //"< country > Canada </ country >" +
-            //"</ GetAirportInformationByCountry >" +
-            //"</ soap:Body >" +
-            //"</ soap:Envelope >";
-
-            //InvokeWebService("http://www.webserviceX.NET", "", "", SOAPXMLSTRING);
         }
 
 
@@ -60,9 +45,9 @@ namespace nmehanmal_janderson
             {
                 RadioButton rButton = new RadioButton();
 
-                rButton.Text = tmpNode.Attributes["name"].Value;
                 rButton.AutoSize = true;
                 rButton.Tag = tmpNode; //To be accessed from the lambda expression
+                rButton.Text = tmpNode.Attributes["name"].Value;
                 rButton.Click += (sender, e) => {
                     //Clear out layout
                     layoutParameterNames.Controls.Clear();
@@ -70,10 +55,11 @@ namespace nmehanmal_janderson
                     //Insert the validation for the parameters associated with the method
                     foreach (XmlNode innerNode in (((sender as RadioButton).Tag as XmlNode).SelectNodes("param") as XmlNodeList))
                     {
-                        TextBox textBox = new TextBox();
                         Label textLabel = new Label();
-
                         textLabel.Text = innerNode.Attributes["name"].Value + ':';
+
+                        TextBox textBox = new TextBox();
+                        textBox.Name = innerNode.Attributes["name"].Value;
 
                         //Add controls to layout
                         layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox });
@@ -106,8 +92,22 @@ namespace nmehanmal_janderson
         //
         private void bHttpPostButton_Click(object sender, System.EventArgs e)
         {
+            //Get selected method
+            var rButtonChecked = layoutMethodNames.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+
+            //Get input parameters
+            Dictionary<string, object> paramMap = new Dictionary<string, object>();
+
+            foreach (Control paramControl in layoutParameterNames.Controls)
+            {                 
+                if (!((paramControl.GetType()).Equals(typeof(Label))))
+                {
+                    paramMap.Add(paramControl.Name, paramControl.Text);
+                }
+            }
+
             //Post SOAP message
-            httpSoapClient.SoapRequestAndResponse("", null);
+            httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
         }
 
 

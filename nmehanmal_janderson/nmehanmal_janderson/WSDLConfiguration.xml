@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
 	<definition>
-		<service name="TempConvertSoap" url="">
-			<method name="FahrenheitToCelsius">
+		<service name="TempConvertSoap">
+			<method name="FahrenheitToCelsius" soapAction="https://www.w3schools.com/xml/FahrenheitToCelsius">
 				<param  name="Fahrenheit" type="string"></param>
-				<return name="FahrenheitToCelsiusResult" type="string"></return>
+				<return_method name="FahrenheitToCelsiusResponse">
+					<return_param name="FahrenheitToCelsiusResult" type="string"></return_param>
+				</return_method>
 			</method>
-			<method name="CelsiusToFahrenheit">
+			<method name="CelsiusToFahrenheit" soapAction="https://www.w3schools.com/xml/CelsiusToFahrenheit">
 				<param  name="Celsius" type="string"></param>
-				<return name="CelsiusToFahrenheitResult" type="string"></return>
+				<return_method name="CelsiusToFahrenheitResponse">
+					<return_param name="CelsiusToFahrenheitResult" type="string"></return_param>
+				</return_method>
 			</method>
 		</service>
 		<service name="service2"></service>
+		<service name="service3"></service>
 	</definition>
 	<definition></definition>
 	<definition></definition>
