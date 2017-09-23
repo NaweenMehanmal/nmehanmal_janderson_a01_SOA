@@ -98,6 +98,7 @@ namespace nmehanmal_janderson
                     {
                         string xmlString = reader.ReadToEnd();
                         XmlDocument responseDoc = new XmlDocument();
+
                         responseDoc.LoadXml(xmlString);
 
                         XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName); //make a list of nodes (there should really only be one)
@@ -106,6 +107,11 @@ namespace nmehanmal_janderson
                     }
                 }
                 return responseString;
+            }
+            catch(XmlException xmlEx)
+            {
+                MessageBox.Show("XML Parse Error: " + xmlEx.Message);
+                return null;
             }
             catch (Exception ex)
             {
