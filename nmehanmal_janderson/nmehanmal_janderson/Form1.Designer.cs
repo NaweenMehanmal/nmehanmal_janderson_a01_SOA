@@ -35,6 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblSoapResponse = new System.Windows.Forms.Label();
+            this.lblSoapResponseValue = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cServiceNames
@@ -100,11 +102,30 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Choose a Web Service:";
             // 
+            // lblSoapResponse
+            // 
+            this.lblSoapResponse.AutoSize = true;
+            this.lblSoapResponse.Location = new System.Drawing.Point(42, 315);
+            this.lblSoapResponse.Name = "lblSoapResponse";
+            this.lblSoapResponse.Size = new System.Drawing.Size(91, 13);
+            this.lblSoapResponse.TabIndex = 7;
+            this.lblSoapResponse.Text = "The response is...";
+            // 
+            // lblSoapResponseValue
+            // 
+            this.lblSoapResponseValue.AutoSize = true;
+            this.lblSoapResponseValue.Location = new System.Drawing.Point(139, 315);
+            this.lblSoapResponseValue.Name = "lblSoapResponseValue";
+            this.lblSoapResponseValue.Size = new System.Drawing.Size(0, 13);
+            this.lblSoapResponseValue.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 487);
+            this.Controls.Add(this.lblSoapResponseValue);
+            this.Controls.Add(this.lblSoapResponse);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -128,6 +149,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblSoapResponse;
+        private System.Windows.Forms.Label lblSoapResponseValue;
     }
 }
 

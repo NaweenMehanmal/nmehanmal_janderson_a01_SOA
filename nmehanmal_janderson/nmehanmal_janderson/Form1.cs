@@ -83,7 +83,9 @@ namespace nmehanmal_janderson
             GenerateRadioButtonsForMethods();
 
             //Fresh start, disable post button
-            bHttpPostButton.Enabled = false; 
+            bHttpPostButton.Enabled = false;
+
+            lblSoapResponseValue.Text = "";
         }
 
 
@@ -106,10 +108,8 @@ namespace nmehanmal_janderson
                 }
             }
 
-            //Post SOAP message
-            httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
+                //Post SOAP response message
+                lblSoapResponseValue.Text = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
         }
-
-
     }
 }

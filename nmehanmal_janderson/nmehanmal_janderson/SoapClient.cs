@@ -12,8 +12,8 @@ namespace nmehanmal_janderson
 
         //const
         public const string xmlns_soap = "http://schemas.xmlsoap.org/soap/envelope/";
-        public const string xmlns_xsd  = "http://www.w3.org/2001/XMLSchema";
-        public const string xmlns_xsi  = "http://www.w3.org/2001/XMLSchema-instance";
+        public const string xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
+        public const string xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
 
         public List<string> WebServiceList { get; set; }
 
@@ -23,7 +23,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
+        public string SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -31,6 +31,8 @@ namespace nmehanmal_janderson
             string soapActionUrl = "";
             string location = "";
             string url = "";
+            string returnMethodName = "";
+            string returnParamName = "";
 
             try
             {
@@ -42,6 +44,17 @@ namespace nmehanmal_janderson
                         {
                             url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
                             location = serviceNode.Attributes["location"].Value;
+
+                            foreach (XmlNode methodNode in serviceNode.SelectNodes("method"))
+                            {
+                                if (methodNode.Attributes["name"].Value == methodName)
+                                {
+                                    returnMethodName = methodNode.ChildNodes[1].Attributes["name"].Value;
+                                    returnParamName = methodNode.ChildNodes[1].ChildNodes[0].Attributes["name"].Value; //burrow down through the known structure to extract the returnParameter name
+                                    break;
+                                }
+                            }
+
                             soapEnvXml = GenerateSoapResponseTemplate(serviceNode, url, methodName, paramMap, out soapActionUrl);
                             isSoapMessageGenerated = true;
                             break;
@@ -54,11 +67,12 @@ namespace nmehanmal_janderson
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //Generating soap message failed
                 MessageBox.Show(ex.Message);
-            }     
+                return null;
+            }
 
             //Through an HTTP Post request, sent the data
             try
@@ -77,24 +91,29 @@ namespace nmehanmal_janderson
                 }
 
                 //response
+
+                string responseString = "";
+
                 using (WebResponse response = httpRequest.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
-                        string result = reader.ReadToEnd();
-                        MessageBox.Show(result);
+                        string xmlString = reader.ReadToEnd();
+                        XmlDocument responseDoc = new XmlDocument();
+                        responseDoc.LoadXml(xmlString);
 
-                        //JER THIS IS YOUR GROUND
-                        //You can parse the response XML because we know what the return body is called (look at return_method)
+                        XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName); //make a list of nodes (there should really only be one)
 
+                        responseString = nodes[0].InnerText;
                     }
                 }
+                return responseString;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return null;
             }
-            
         }
 
 
@@ -136,14 +155,14 @@ namespace nmehanmal_janderson
 
                 XmlText paramVal = retSoapXml.CreateTextNode(entry.Value.ToString());
                 paramMethod.AppendChild(paramVal);
-            }         
+            }
 
             //retSoapXml.Save(@"G:\test.xml");
 
             //Get the soapAction 
             foreach (XmlNode n in xNode.SelectNodes("method"))
             {
-                if(n.Attributes["name"].Value == methodName)
+                if (n.Attributes["name"].Value == methodName)
                 {
                     soapAction = n.Attributes["soapAction"].Value;
                 }
@@ -155,6 +174,7 @@ namespace nmehanmal_janderson
 
         public void GetWebServicesAndMethods(XmlDocument xmlDoc)
         {
+            // in here i can deterine the name of the respone
             XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");
 
             foreach (XmlNode tmpNode in nodeList)
@@ -165,7 +185,5 @@ namespace nmehanmal_janderson
                 }
             }
         }
-
     }
-
 }
