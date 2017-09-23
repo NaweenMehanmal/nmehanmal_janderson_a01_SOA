@@ -25,6 +25,11 @@
 					<return_param name="KnowledgeResult" type="double"></return_param>
 				</return_method>
 			</method>
+			<method name="AboutKnowledgeLeak" soapAction="http://webservices.gcomputer.net/AboutKnowledgeLeak">
+				<return_method name="AboutKnowledgeLeakResponse">
+					<return_param name="AboutKnowledgeLeakResult" type="string"></return_param>
+				</return_method>
+			</method>
 		</service>
 	</definition>
 	<definition></definition>

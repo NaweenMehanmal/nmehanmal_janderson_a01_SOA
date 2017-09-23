@@ -41,14 +41,15 @@ namespace nmehanmal_janderson
                     {
                         if (serviceNode.Attributes["name"].Value == serviceName)
                         {
+                            location = serviceNode.Attributes["location"].Value; 
                             url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
-                            location = serviceNode.Attributes["location"].Value;
+
 
                             foreach (XmlNode methodNode in serviceNode.SelectNodes("method"))
                             {
                                 if (methodNode.Attributes["name"].Value == methodName)
                                 {
-                                    returnParamName = methodNode.ChildNodes[1].ChildNodes[0].Attributes["name"].Value; //burrow down through the known structure to extract the returnParameter name
+                                    returnParamName = methodNode.SelectSingleNode("return_method/return_param").Attributes["name"].Value; //burrow down through the known structure to extract the returnParameter name
                                     break;
                                 }
                             }
@@ -97,6 +98,9 @@ namespace nmehanmal_janderson
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         string xmlString = reader.ReadToEnd();
+
+                        //MessageBox.Show(xmlString);
+
                         XmlDocument responseDoc = new XmlDocument();
 
                         responseDoc.LoadXml(xmlString);
