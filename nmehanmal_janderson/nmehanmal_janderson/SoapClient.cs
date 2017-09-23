@@ -31,7 +31,6 @@ namespace nmehanmal_janderson
             string soapActionUrl = "";
             string location = "";
             string url = "";
-            string returnMethodName = "";
             string returnParamName = "";
 
             try
@@ -49,7 +48,6 @@ namespace nmehanmal_janderson
                             {
                                 if (methodNode.Attributes["name"].Value == methodName)
                                 {
-                                    returnMethodName = methodNode.ChildNodes[1].Attributes["name"].Value;
                                     returnParamName = methodNode.ChildNodes[1].ChildNodes[0].Attributes["name"].Value; //burrow down through the known structure to extract the returnParameter name
                                     break;
                                 }
