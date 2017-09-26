@@ -15,6 +15,8 @@ namespace nmehanmal_janderson
         public const string xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
         public const string xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
 
+        public const string return_param_tag = "return_method/return_param";
+
         public List<string> WebServiceList { get; set; }
 
         public SoapClient()
@@ -44,12 +46,11 @@ namespace nmehanmal_janderson
                             location = serviceNode.Attributes["location"].Value; 
                             url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
 
-
                             foreach (XmlNode methodNode in serviceNode.SelectNodes("method"))
                             {
                                 if (methodNode.Attributes["name"].Value == methodName)
                                 {
-                                    returnParamName = methodNode.SelectSingleNode("return_method/return_param").Attributes["name"].Value; //burrow down through the known structure to extract the returnParameter name
+                                    returnParamName = methodNode.SelectSingleNode(return_param_tag).Attributes["name"].Value;
                                     break;
                                 }
                             }
@@ -99,22 +100,51 @@ namespace nmehanmal_janderson
                     {
                         string xmlString = reader.ReadToEnd();
 
-                        //MessageBox.Show(xmlString);
-
                         XmlDocument responseDoc = new XmlDocument();
 
                         responseDoc.LoadXml(xmlString);
 
-                        XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName); //make a list of nodes (there should really only be one)
+                        XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName);
 
-                        responseString = nodes[0].InnerText;
+                        if (nodes.Count == 0)
+                            // If there is no matching tag found then it could be a soap fault code so we need to check for that.
+                        {
+                            // search now instead for a soap:Fault tag. if found it should contain the fault code and message.
+                            nodes = responseDoc.GetElementsByTagName("soap:Fault");
+
+                            if (nodes.Count != 1)
+                            {
+                                throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
+                            }
+                            else
+                            {
+                                responseString = "SOAP Fault Encountered!\nFault Code: " + nodes[0].ChildNodes[0].InnerText +
+                                    "\nFault String: " + nodes[0].ChildNodes[1].InnerText +
+                                    "\nFault Detail: " + nodes[0].ChildNodes[2].InnerText;
+                            }
+
+                        }
+                        else if (nodes.Count > 1)
+                        // There should be no situation where there are multiple response nodes but i guess we can handle that in case.
+                        {
+                            throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
+                        }
+                        else
+                        {
+                            responseString = nodes[0].InnerText;
+                        }
                     }
                 }
                 return responseString;
             }
-            catch(XmlException xmlEx)
+            catch (XmlException xmlEx)
             {
                 MessageBox.Show("XML Parse Error: " + xmlEx.Message);
+                return null;
+            }
+            catch(InvalidDataException dataEx)
+            {
+                MessageBox.Show("Invalid Soap Response Format: " + dataEx.Message);
                 return null;
             }
             catch (Exception ex)
