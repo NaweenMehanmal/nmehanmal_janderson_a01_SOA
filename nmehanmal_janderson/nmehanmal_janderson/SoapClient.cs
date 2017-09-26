@@ -139,7 +139,7 @@ namespace nmehanmal_janderson
             }
             catch (XmlException xmlEx)
             {
-                MessageBox.Show("XML Parse Error: " + xmlEx.Message);
+                MessageBox.Show("SOAP Response XML Parsing Error: " + xmlEx.Message);
                 return null;
             }
             catch(InvalidDataException dataEx)
