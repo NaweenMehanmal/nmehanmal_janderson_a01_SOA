@@ -37,8 +37,8 @@
 		</service>
 	</definition>
 	
-	<definition targetNamespace="http://webservicex.net">
-		<service name="Airport Information Webservice" location="http://webservicex.net/new/Home/ServiceDetail/20">
+	<definition targetNamespace="http://www.webserviceX.NET">
+		<service name="Airport Information Webservice" location="http://www.webservicex.net/airport.asmx">
 			<method name="GetAirportInformationByCountry" soapAction="http://www.webserviceX.NET/GetAirportInformationByCountry">
 				<param name="country" type="string"/>
 				<return_method name="GetAirportInformationByCountryResponse">
