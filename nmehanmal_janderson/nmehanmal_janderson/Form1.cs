@@ -3,6 +3,7 @@ using System.Xml;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Data;
 
 namespace nmehanmal_janderson
 {
@@ -109,7 +110,11 @@ namespace nmehanmal_janderson
             }
 
                 //Post SOAP response message
-                lblSoapResponseValue.Text = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
+                DataTable newTable = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
+
+                dgvDataResponse.DataSource = newTable; 
         }
+
+   
     }
 }

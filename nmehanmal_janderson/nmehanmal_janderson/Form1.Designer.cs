@@ -37,6 +37,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblSoapResponse = new System.Windows.Forms.Label();
             this.lblSoapResponseValue = new System.Windows.Forms.Label();
+            this.dgvDataResponse = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDataResponse)).BeginInit();
             this.SuspendLayout();
             // 
             // cServiceNames
@@ -105,7 +107,7 @@
             // lblSoapResponse
             // 
             this.lblSoapResponse.AutoSize = true;
-            this.lblSoapResponse.Location = new System.Drawing.Point(42, 315);
+            this.lblSoapResponse.Location = new System.Drawing.Point(13, 240);
             this.lblSoapResponse.Name = "lblSoapResponse";
             this.lblSoapResponse.Size = new System.Drawing.Size(91, 13);
             this.lblSoapResponse.TabIndex = 7;
@@ -119,11 +121,20 @@
             this.lblSoapResponseValue.Size = new System.Drawing.Size(0, 13);
             this.lblSoapResponseValue.TabIndex = 8;
             // 
+            // dgvDataResponse
+            // 
+            this.dgvDataResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDataResponse.Location = new System.Drawing.Point(12, 272);
+            this.dgvDataResponse.Name = "dgvDataResponse";
+            this.dgvDataResponse.Size = new System.Drawing.Size(581, 203);
+            this.dgvDataResponse.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 487);
+            this.Controls.Add(this.dgvDataResponse);
             this.Controls.Add(this.lblSoapResponseValue);
             this.Controls.Add(this.lblSoapResponse);
             this.Controls.Add(this.label3);
@@ -135,6 +146,7 @@
             this.Controls.Add(this.cServiceNames);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDataResponse)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,6 +163,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSoapResponse;
         private System.Windows.Forms.Label lblSoapResponseValue;
+        private System.Windows.Forms.DataGridView dgvDataResponse;
     }
 }
 

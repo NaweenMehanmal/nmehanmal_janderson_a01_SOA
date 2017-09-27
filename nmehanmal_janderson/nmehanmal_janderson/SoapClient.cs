@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace nmehanmal_janderson
 {
@@ -25,7 +27,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public string SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
+        public DataTable SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -75,6 +77,10 @@ namespace nmehanmal_janderson
             }
 
             //Through an HTTP Post request, sent the data
+
+            DataTable myTable = new DataTable();
+
+
             try
             {
                 //Http Related
@@ -105,6 +111,21 @@ namespace nmehanmal_janderson
                         responseDoc.LoadXml(xmlString);
 
                         XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName);
+                        XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
+
+
+                        if (xmlResponseSoapMessage != null)
+                        {
+                             myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
+                        }
+                        else
+                        {
+                            //Create the table row and column on the fly 
+                            myTable.Columns.Add(nodes[0].Name);
+                            myTable.Rows.Add(nodes[0].InnerText);
+                        }
+
+
 
                         if (nodes.Count == 0)
                             // If there is no matching tag found then it could be a soap fault code so we need to check for that.
@@ -135,7 +156,9 @@ namespace nmehanmal_janderson
                         }
                     }
                 }
-                return responseString;
+
+                //return responseString;
+                return myTable; 
             }
             catch (XmlException xmlEx)
             {
@@ -152,6 +175,57 @@ namespace nmehanmal_janderson
                 MessageBox.Show(ex.Message);
                 return null;
             }
+        }
+
+
+        public DataTable ParseXmlSoapResponse(XmlDocument xmlDoc)
+        {
+            DataTable retTable = new DataTable();
+            List<object> myList = new List<object>();
+
+            XmlNodeList xmlList = xmlDoc.GetElementsByTagName("Table");
+
+            //Get the column name first 
+            foreach(XmlNode node in xmlList[0].ChildNodes)
+            {
+                retTable.Columns.Add(node.Name);
+            }
+
+            foreach(XmlNode node in xmlList)
+            {
+
+                myList.Clear();
+
+                foreach (XmlNode innerNode in node.ChildNodes)
+                {
+                    myList.Add(innerNode.InnerText);
+                }
+
+                retTable.Rows.Add(myList.ToArray());
+            }
+
+
+            //xmlDoc.ParentNode.Name == "NewDataSet"
+            
+            return retTable; 
+        }
+
+
+
+        public XmlDocument ValidateXml(string xml)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+
+            try
+            {
+                xmlDoc.LoadXml(xml);
+            }
+            catch
+            {
+                xmlDoc = null;
+            }
+
+            return xmlDoc;
         }
 
 
@@ -194,8 +268,6 @@ namespace nmehanmal_janderson
                 XmlText paramVal = retSoapXml.CreateTextNode(entry.Value.ToString());
                 paramMethod.AppendChild(paramVal);
             }
-
-            //retSoapXml.Save(@"G:\test.xml");
 
             //Get the soapAction 
             foreach (XmlNode n in xNode.SelectNodes("method"))
