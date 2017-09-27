@@ -54,19 +54,19 @@
             // 
             this.layoutMethodNames.Location = new System.Drawing.Point(12, 88);
             this.layoutMethodNames.Name = "layoutMethodNames";
-            this.layoutMethodNames.Size = new System.Drawing.Size(581, 34);
+            this.layoutMethodNames.Size = new System.Drawing.Size(798, 140);
             this.layoutMethodNames.TabIndex = 1;
             // 
             // layoutParameterNames
             // 
-            this.layoutParameterNames.Location = new System.Drawing.Point(12, 154);
+            this.layoutParameterNames.Location = new System.Drawing.Point(12, 280);
             this.layoutParameterNames.Name = "layoutParameterNames";
             this.layoutParameterNames.Size = new System.Drawing.Size(581, 34);
             this.layoutParameterNames.TabIndex = 2;
             // 
             // bHttpPostButton
             // 
-            this.bHttpPostButton.Location = new System.Drawing.Point(13, 199);
+            this.bHttpPostButton.Location = new System.Drawing.Point(13, 325);
             this.bHttpPostButton.Name = "bHttpPostButton";
             this.bHttpPostButton.Size = new System.Drawing.Size(120, 23);
             this.bHttpPostButton.TabIndex = 3;
@@ -88,7 +88,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 127);
+            this.label2.Location = new System.Drawing.Point(12, 253);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(136, 20);
             this.label2.TabIndex = 5;
@@ -107,7 +107,7 @@
             // lblSoapResponse
             // 
             this.lblSoapResponse.AutoSize = true;
-            this.lblSoapResponse.Location = new System.Drawing.Point(13, 240);
+            this.lblSoapResponse.Location = new System.Drawing.Point(13, 366);
             this.lblSoapResponse.Name = "lblSoapResponse";
             this.lblSoapResponse.Size = new System.Drawing.Size(91, 13);
             this.lblSoapResponse.TabIndex = 7;
@@ -124,16 +124,16 @@
             // dgvDataResponse
             // 
             this.dgvDataResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataResponse.Location = new System.Drawing.Point(12, 272);
+            this.dgvDataResponse.Location = new System.Drawing.Point(12, 444);
             this.dgvDataResponse.Name = "dgvDataResponse";
-            this.dgvDataResponse.Size = new System.Drawing.Size(581, 203);
+            this.dgvDataResponse.Size = new System.Drawing.Size(798, 203);
             this.dgvDataResponse.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 487);
+            this.ClientSize = new System.Drawing.Size(822, 659);
             this.Controls.Add(this.dgvDataResponse);
             this.Controls.Add(this.lblSoapResponseValue);
             this.Controls.Add(this.lblSoapResponse);

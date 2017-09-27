@@ -269,14 +269,14 @@ namespace nmehanmal_janderson
                 paramMethod.AppendChild(paramVal);
             }
 
-            //Get the soapAction 
-            foreach (XmlNode n in xNode.SelectNodes("method"))
-            {
-                if (n.Attributes["name"].Value == methodName)
-                {
-                    soapAction = n.Attributes["soapAction"].Value;
-                }
-            }
+            ////Get the soapAction 
+            //foreach (XmlNode n in xNode.SelectNodes("method"))
+            //{
+            //    if (n.Attributes["name"].Value == methodName)
+            //    {
+            //        soapAction = n.Attributes["soapAction"].Value;
+            //    }
+            //}
 
             return retSoapXml;
         }

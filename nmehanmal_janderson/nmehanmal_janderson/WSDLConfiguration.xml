@@ -39,33 +39,65 @@
 	
 	<definition targetNamespace="http://www.webserviceX.NET">
 		<service name="Airport Information Webservice" location="http://www.webservicex.net/airport.asmx">
-			<method name="GetAirportInformationByCountry" soapAction="http://www.webserviceX.NET/GetAirportInformationByCountry">
+			<method name="GetAirportInformationByCountry">
 				<param name="country" type="string"/>
 				<return_method name="GetAirportInformationByCountryResponse">
 					<return_param name="GetAirportInformationByCountryResult" type="string"/>
 				</return_method>
 			</method>
 			
-			<method name="getAirportInformationByAirportCode" soapAction="http://www.webserviceX.NET/getAirportInformationByAirportCode">
+			<method name="getAirportInformationByAirportCode">
 				<param name="airportCode" type="string"/>
 				<return_method name="getAirportInformationByAirportCodeResponse">
 					<return_param name="getAirportInformationByAirportCodeResult" type="string"/>
 				</return_method>
 			</method>
+			
+			<method name="getAirportInformationByCityOrAirportName">
+				<param name="cityOrAirportName" type="string"/>
+				<return_method name="getAirportInformationByCityOrAirportNameResponse">
+					<return_param name="getAirportInformationByCityOrAirportNameResult" type="string"/>
+				</return_method>
+			</method>
+			
+			<method name="getAirportInformationByISOCountryCode">
+				<param name="CountryAbbrviation" type="string"/>
+				<return_method name="getAirportInformationByISOCountryCodeResponse">
+					<return_param name="getAirportInformationByISOCountryCodeResult" type="string"/>
+				</return_method>
+			</method>			
+			
 		</service>
 		
-		<service name="Country Details" location="http://webservicex.com/new/Home/ServiceDetail/17">
-			<method name="GetCountries" soapAction="http://www.webserviceX.NET/GetCountries">
+		<service name="Country Details" location="http://www.webservicex.net/country.asmx">
+			<method name="GetCountries">
 				<return_method name="GetCountriesResponse">
 					<return_param name="GetCountriesResult" type="string"/>
 				</return_method>
 			</method>
-			<method name="GetCountryByCountryCode" soapAction="http://www.webserviceX.NET/GetCountryByCountryCode">
+			
+			<method name="GetCurrencies">
+				<return_method name="GetCurrenciesResponse">
+					<return_param name="GetCurrenciesResult" type="string"/>
+				</return_method>
+			</method>
+			
+			<method name="GetCountryByCountryCode">
 				<param name="CountryCode" type="string"/>
 				<return_method name="GetCountryByCountryCodeResponse">
 					<return_param name="GetCountryByCountryCodeResult" type="string"/>
 				</return_method>
 			</method>
+			
+			<method name="GetISOCountryCodeByCountyName">
+				<param name="CountryName" type="string"/>
+				<return_method name="GetISOCountryCodeByCountyNameResponse">
+					<return_param name="GetISOCountryCodeByCountyNameResult" type="string"/>
+				</return_method>
+			</method>
+			
 		</service>
+		
+		
 	</definition>
 </serviceConfig>
