@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace nmehanmal_janderson
 {
@@ -60,7 +61,7 @@ namespace nmehanmal_janderson
                         textLabel.Text = innerNode.Attributes["name"].Value + ':';
 
                         TextBox textBox = new TextBox();
-                        textBox.Name = innerNode.Attributes["name"].Value;
+                        textBox.Name = innerNode.Attributes["type"].Value + "_" + innerNode.Attributes["name"].Value;
 
                         //Add controls to layout
                         layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox });
@@ -78,14 +79,12 @@ namespace nmehanmal_janderson
         //
         //Dropdown changed event
         //
-        private void cServiceNames_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cServiceNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //Generate the methods 
-            GenerateRadioButtonsForMethods();
+            GenerateRadioButtonsForMethods(); //Generate the methods
 
-            //Fresh start, disable post button
-            bHttpPostButton.Enabled = false;
-
+            bHttpPostButton.Enabled = false; //Fresh start, disable post button
+            
             lblSoapResponseValue.Text = "";
         }
 
@@ -97,24 +96,77 @@ namespace nmehanmal_janderson
         {
             //Get selected method
             var rButtonChecked = layoutMethodNames.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+            bool isDataValid = true;
+            List<string> errorList = new List<string>(); 
 
             //Get input parameters
             Dictionary<string, object> paramMap = new Dictionary<string, object>();
 
             foreach (Control paramControl in layoutParameterNames.Controls)
-            {                 
+            {              
                 if (!((paramControl.GetType()).Equals(typeof(Label))))
                 {
-                    paramMap.Add(paramControl.Name, paramControl.Text);
+                    //First validate it
+                    string dataType = paramControl.Name.Split('_')[0];
+                    string ctrlName = paramControl.Name.Split('_')[1];
+
+                    //Check to see if the field is empty
+                    if (paramControl.Text.Trim() == "")
+                    {
+                        isDataValid = false;
+                        errorList.Add(string.Format("[{0}] parameter requires a non-empty value!", ctrlName));
+                    }
+                    else
+                    {
+                        //Check if the proper value has in put in
+                        if (dataType == "string")
+                        {
+                            if(Regex.IsMatch(paramControl.Text, "(\\d+)|[_,+/\\?!=@#$%^&*();<>\"':.]"))
+                            {
+                                isDataValid = false;
+                                errorList.Add(string.Format("[{0}] parameter may only contain alphabets!", ctrlName));
+                            }
+                        }
+                        else if (dataType == "int" || dataType == "double")
+                        {
+                            if (Regex.IsMatch(paramControl.Text, "\\D+"))
+                            {
+                                isDataValid = false;
+                                errorList.Add(string.Format("[{0}] parameter may only contain numbers!", ctrlName));
+                            }
+                        }
+                        else if (dataType == "boolean")
+                        {
+                            if (!(paramControl.Text == "true" || paramControl.Text == "false"))
+                            {
+                                isDataValid = false;
+                                errorList.Add(string.Format("[{0}] parameter may only contain true or false!", ctrlName));
+                            }
+                        }
+                    }
+
+                    paramMap.Add(ctrlName, paramControl.Text); //Use ctrlName because it's the same name as the parameter in the WSDL
                 }
             }
 
-                //Post SOAP response message
-                DataTable newTable = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref this.tvDisplayResponse);
+            if(isDataValid == true)
+            {
+                httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref this.tvDisplayResponse); //Post SOAP response message
+            }
+            else
+            {
+                //Display error due to invalid data
+                string errMessage = "";
 
-                //dgvDataResponse.DataSource = newTable; 
+                foreach(string str in errorList)
+                {
+                    errMessage += str + '\n';
+                }
+                
+                MessageBox.Show(errMessage);
+            }
         }
 
-   
+
     }
 }

@@ -5,6 +5,7 @@
 		
 			<method name="FahrenheitToCelsius" soapAction="https://www.w3schools.com/xml/FahrenheitToCelsius">
 				<param  name="Fahrenheit" type="string"></param>
+				<param  name="test" type="boolean"></param>
 				<return_method name="FahrenheitToCelsiusResponse">
 					<return_param name="FahrenheitToCelsiusResult" type="string"></return_param>
 				</return_method>

@@ -16,7 +16,6 @@ namespace nmehanmal_janderson
         public const string xmlns_soap = "http://schemas.xmlsoap.org/soap/envelope/";
         public const string xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
         public const string xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
-
         public const string return_param_tag = "return_method/return_param";
 
         public List<string> WebServiceList { get; set; }
@@ -27,7 +26,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public DataTable SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse)
+        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -73,13 +72,10 @@ namespace nmehanmal_janderson
             {
                 //Generating soap message failed
                 MessageBox.Show(ex.Message);
-                return null;
+                return;
             }
 
-            //Through an HTTP Post request, sent the data
-
-            DataTable myTable = new DataTable();
-            
+            //Through an HTTP Post request, sent the data            
             try
             {
                 //Http Related
@@ -89,17 +85,14 @@ namespace nmehanmal_janderson
                 httpRequest.Accept = "text/xml";
                 httpRequest.Method = "POST";
 
-                //request
+                //Request
                 using (Stream stream = httpRequest.GetRequestStream())
                 {
                     soapEnvXml.Save(stream);
                 }
 
-                //response
-
-                string responseString = "";
-
-                tvDisplayResponse.Nodes.Clear();
+                //Response
+                tvDisplayResponse.Nodes.Clear(); //Clear the TreeView
 
                 using (WebResponse response = httpRequest.GetResponse())
                 {
@@ -126,9 +119,6 @@ namespace nmehanmal_janderson
                                 //Create the table row and column on the fly 
                                 TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
                                 newNode.Nodes.Add(nodes[0].InnerText);
-
-                                //myTable.Columns.Add(nodes[0].Name);
-                                //myTable.Rows.Add(nodes[0].InnerText);
                             }
                         }
                         // If no nodes are found it could be that there is a SOAP fault so we search for that tag in a similar way.
@@ -148,39 +138,35 @@ namespace nmehanmal_janderson
                                 //populate the soap fault headings into the table and capture the fault info in a list
                                 foreach (XmlNode childNode in nodes[0].ChildNodes)
                                 {
-                                    myTable.Columns.Add(childNode.Name);
+                                    //myTable.Columns.Add(childNode.Name);
                                     faultInfo.Add(childNode.InnerText);
                                 }
 
-                                myTable.Rows.Add(faultInfo.ToArray());
+                                //myTable.Rows.Add(faultInfo.ToArray());
                             }
                         }
                         else
-                        // There should be no situation where there are multiple response nodes but i guess we can handle that in case.
                         {
+                            // There should be no situation where there are multiple response nodes but i guess we can handle that in case.
                             throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
                         }
                     }
                 }
-
-                //return responseString;
-                return myTable; 
             }
             catch (XmlException xmlEx)
             {
                 MessageBox.Show("SOAP Response XML Parsing Error: " + xmlEx.Message);
-                return null;
             }
             catch(InvalidDataException dataEx)
             {
                 MessageBox.Show("Invalid Soap Response Format: " + dataEx.Message);
-                return null;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return null;
             }
+
+            return;
         }
 
         
@@ -214,38 +200,9 @@ namespace nmehanmal_janderson
                 tParentNode.Nodes.Add(root.Value);
             }
         }
+         
 
-        //public DataTable ParseXmlSoapResponse(XmlDocument xmlDoc)
-        //{
-        //    DataTable retTable = new DataTable();
-        //    List<object> myList = new List<object>();
-
-        //    XmlNodeList xmlList = xmlDoc.GetElementsByTagName("Table");
-
-        //    //Get the column name first 
-        //    foreach(XmlNode node in xmlList[0].ChildNodes)
-        //    {
-        //        retTable.Columns.Add(node.Name);
-        //    }
-
-        //    foreach(XmlNode node in xmlList)
-        //    {
-
-        //        myList.Clear();
-
-        //        foreach (XmlNode innerNode in node.ChildNodes)
-        //        {
-        //            myList.Add(innerNode.InnerText);
-        //        }
-
-        //        retTable.Rows.Add(myList.ToArray());
-        //    }
-            
-        //    return retTable; 
-        //}
-
-
-
+        
         public XmlDocument ValidateXml(string xml)
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -303,15 +260,6 @@ namespace nmehanmal_janderson
                 paramMethod.AppendChild(paramVal);
             }
 
-            ////Get the soapAction 
-            //foreach (XmlNode n in xNode.SelectNodes("method"))
-            //{
-            //    if (n.Attributes["name"].Value == methodName)
-            //    {
-            //        soapAction = n.Attributes["soapAction"].Value;
-            //    }
-            //}
-
             return retSoapXml;
         }
 
@@ -329,5 +277,8 @@ namespace nmehanmal_janderson
                 }
             }
         }
+
+
+
     }
 }
