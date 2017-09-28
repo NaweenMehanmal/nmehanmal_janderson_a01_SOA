@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cServiceNames = new System.Windows.Forms.ComboBox();
             this.layoutMethodNames = new System.Windows.Forms.FlowLayoutPanel();
             this.layoutParameterNames = new System.Windows.Forms.FlowLayoutPanel();
@@ -130,6 +131,8 @@
             this.dgvDataResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDataResponse.Location = new System.Drawing.Point(12, 444);
             this.dgvDataResponse.Name = "dgvDataResponse";
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvDataResponse.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvDataResponse.Size = new System.Drawing.Size(798, 203);
             this.dgvDataResponse.TabIndex = 9;
             // 

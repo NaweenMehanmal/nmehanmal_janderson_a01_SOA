@@ -111,24 +111,23 @@ namespace nmehanmal_janderson
                         responseDoc.LoadXml(xmlString);
 
                         XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName);
-                        XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
-
-
-                        if (xmlResponseSoapMessage != null)
+                        // We are expecting one node so if that is the result we proceed down the happy path.
+                        if(nodes.Count == 1)
                         {
-                             myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
+                            XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
+                            if (xmlResponseSoapMessage != null)
+                            {
+                                myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
+                            }
+                            else
+                            {
+                                //Create the table row and column on the fly 
+                                myTable.Columns.Add(nodes[0].Name);
+                                myTable.Rows.Add(nodes[0].InnerText);
+                            }
                         }
-                        else
-                        {
-                            //Create the table row and column on the fly 
-                            myTable.Columns.Add(nodes[0].Name);
-                            myTable.Rows.Add(nodes[0].InnerText);
-                        }
-
-
-
-                        if (nodes.Count == 0)
-                            // If there is no matching tag found then it could be a soap fault code so we need to check for that.
+                        // If no nodes are found it could be that there is a SOAP fault so we search for that tag in a similar way.
+                        else if (nodes.Count == 0)
                         {
                             // search now instead for a soap:Fault tag. if found it should contain the fault code and message.
                             nodes = responseDoc.GetElementsByTagName("soap:Fault");
@@ -139,20 +138,22 @@ namespace nmehanmal_janderson
                             }
                             else
                             {
-                                responseString = "SOAP Fault Encountered!\nFault Code: " + nodes[0].ChildNodes[0].InnerText +
-                                    "\nFault String: " + nodes[0].ChildNodes[1].InnerText +
-                                    "\nFault Detail: " + nodes[0].ChildNodes[2].InnerText;
-                            }
+                                List<object> faultInfo = new List<object>();
 
+                                //populate the soap fault headings into the table and capture the fault info in a list
+                                foreach (XmlNode childNode in nodes[0].ChildNodes)
+                                {
+                                    myTable.Columns.Add(childNode.Name);
+                                    faultInfo.Add(childNode.InnerText);
+                                }
+
+                                myTable.Rows.Add(faultInfo.ToArray());
+                            }
                         }
-                        else if (nodes.Count > 1)
+                        else
                         // There should be no situation where there are multiple response nodes but i guess we can handle that in case.
                         {
                             throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
-                        }
-                        else
-                        {
-                            responseString = nodes[0].InnerText;
                         }
                     }
                 }
