@@ -110,9 +110,9 @@ namespace nmehanmal_janderson
             }
 
                 //Post SOAP response message
-                DataTable newTable = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap);
+                DataTable newTable = httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref this.tvDisplayResponse);
 
-                dgvDataResponse.DataSource = newTable; 
+                //dgvDataResponse.DataSource = newTable; 
         }
 
    

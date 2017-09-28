@@ -27,7 +27,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public DataTable SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap)
+        public DataTable SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -79,8 +79,7 @@ namespace nmehanmal_janderson
             //Through an HTTP Post request, sent the data
 
             DataTable myTable = new DataTable();
-
-
+            
             try
             {
                 //Http Related
@@ -100,6 +99,8 @@ namespace nmehanmal_janderson
 
                 string responseString = "";
 
+                tvDisplayResponse.Nodes.Clear();
+
                 using (WebResponse response = httpRequest.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -117,13 +118,17 @@ namespace nmehanmal_janderson
                             XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
                             if (xmlResponseSoapMessage != null)
                             {
-                                myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
+                                //myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
+                                ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
                             }
                             else
                             {
                                 //Create the table row and column on the fly 
-                                myTable.Columns.Add(nodes[0].Name);
-                                myTable.Rows.Add(nodes[0].InnerText);
+                                TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
+                                newNode.Nodes.Add(nodes[0].InnerText);
+
+                                //myTable.Columns.Add(nodes[0].Name);
+                                //myTable.Rows.Add(nodes[0].InnerText);
                             }
                         }
                         // If no nodes are found it could be that there is a SOAP fault so we search for that tag in a similar way.
@@ -178,38 +183,66 @@ namespace nmehanmal_janderson
             }
         }
 
-
-        public DataTable ParseXmlSoapResponse(XmlDocument xmlDoc)
+        
+        public void ParseXmlSoapResponse(ref TreeView tvDisplayResponse, XmlNode root, TreeNode tParentNode)
         {
-            DataTable retTable = new DataTable();
-            List<object> myList = new List<object>();
-
-            XmlNodeList xmlList = xmlDoc.GetElementsByTagName("Table");
-
-            //Get the column name first 
-            foreach(XmlNode node in xmlList[0].ChildNodes)
+            if (root is XmlElement)
             {
-                retTable.Columns.Add(node.Name);
-            }
-
-            foreach(XmlNode node in xmlList)
-            {
-
-                myList.Clear();
-
-                foreach (XmlNode innerNode in node.ChildNodes)
+                if (root.HasChildNodes)
                 {
-                    myList.Add(innerNode.InnerText);
+                    TreeNode newTreeNode;
+
+                    if (tvDisplayResponse.Nodes.Count == 0)
+                    {
+                        newTreeNode = tvDisplayResponse.Nodes.Add(root.Name);
+                    }
+                    else
+                    {
+                        newTreeNode = tParentNode.Nodes.Add(root.Name);
+                    }
+
+                    ParseXmlSoapResponse(ref tvDisplayResponse, root.FirstChild, newTreeNode);
                 }
 
-                retTable.Rows.Add(myList.ToArray());
+                if (root.NextSibling != null)
+                {
+                    ParseXmlSoapResponse(ref tvDisplayResponse, root.NextSibling, tParentNode);
+                }
             }
-
-
-            //xmlDoc.ParentNode.Name == "NewDataSet"
-            
-            return retTable; 
+            else if (root is XmlText)
+            {
+                tParentNode.Nodes.Add(root.Value);
+            }
         }
+
+        //public DataTable ParseXmlSoapResponse(XmlDocument xmlDoc)
+        //{
+        //    DataTable retTable = new DataTable();
+        //    List<object> myList = new List<object>();
+
+        //    XmlNodeList xmlList = xmlDoc.GetElementsByTagName("Table");
+
+        //    //Get the column name first 
+        //    foreach(XmlNode node in xmlList[0].ChildNodes)
+        //    {
+        //        retTable.Columns.Add(node.Name);
+        //    }
+
+        //    foreach(XmlNode node in xmlList)
+        //    {
+
+        //        myList.Clear();
+
+        //        foreach (XmlNode innerNode in node.ChildNodes)
+        //        {
+        //            myList.Add(innerNode.InnerText);
+        //        }
+
+        //        retTable.Rows.Add(myList.ToArray());
+        //    }
+            
+        //    return retTable; 
+        //}
 
 
 

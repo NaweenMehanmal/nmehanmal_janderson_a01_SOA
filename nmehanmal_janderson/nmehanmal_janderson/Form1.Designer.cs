@@ -39,6 +39,7 @@
             this.lblSoapResponse = new System.Windows.Forms.Label();
             this.lblSoapResponseValue = new System.Windows.Forms.Label();
             this.dgvDataResponse = new System.Windows.Forms.DataGridView();
+            this.tvDisplayResponse = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDataResponse)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,7 +56,7 @@
             // 
             this.layoutMethodNames.Location = new System.Drawing.Point(12, 88);
             this.layoutMethodNames.Name = "layoutMethodNames";
-            this.layoutMethodNames.Size = new System.Drawing.Size(798, 140);
+            this.layoutMethodNames.Size = new System.Drawing.Size(685, 140);
             this.layoutMethodNames.TabIndex = 1;
             // 
             // layoutParameterNames
@@ -133,14 +134,22 @@
             this.dgvDataResponse.Name = "dgvDataResponse";
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvDataResponse.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvDataResponse.Size = new System.Drawing.Size(798, 203);
+            this.dgvDataResponse.Size = new System.Drawing.Size(685, 203);
             this.dgvDataResponse.TabIndex = 9;
+            // 
+            // tvDisplayResponse
+            // 
+            this.tvDisplayResponse.Location = new System.Drawing.Point(739, 20);
+            this.tvDisplayResponse.Name = "tvDisplayResponse";
+            this.tvDisplayResponse.Size = new System.Drawing.Size(655, 627);
+            this.tvDisplayResponse.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(822, 659);
+            this.ClientSize = new System.Drawing.Size(1406, 659);
+            this.Controls.Add(this.tvDisplayResponse);
             this.Controls.Add(this.dgvDataResponse);
             this.Controls.Add(this.lblSoapResponseValue);
             this.Controls.Add(this.lblSoapResponse);
@@ -171,6 +180,7 @@
         private System.Windows.Forms.Label lblSoapResponse;
         private System.Windows.Forms.Label lblSoapResponseValue;
         private System.Windows.Forms.DataGridView dgvDataResponse;
+        private System.Windows.Forms.TreeView tvDisplayResponse;
     }
 }
 
