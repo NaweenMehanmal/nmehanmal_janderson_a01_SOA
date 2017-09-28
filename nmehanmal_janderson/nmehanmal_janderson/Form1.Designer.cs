@@ -123,6 +123,10 @@
             // 
             // dgvDataResponse
             // 
+            this.dgvDataResponse.AllowUserToAddRows = false;
+            this.dgvDataResponse.AllowUserToDeleteRows = false;
+            this.dgvDataResponse.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvDataResponse.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvDataResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDataResponse.Location = new System.Drawing.Point(12, 444);
             this.dgvDataResponse.Name = "dgvDataResponse";
