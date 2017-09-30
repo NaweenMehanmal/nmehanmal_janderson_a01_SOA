@@ -1,104 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
-	<definition targetNamespace="https://www.w3schools.com/xml/">
-		<service name="TempConvertSoap" location="http://www.w3schools.com/xml/tempconvert.asmx">
-		
-			<method name="FahrenheitToCelsius" soapAction="https://www.w3schools.com/xml/FahrenheitToCelsius">
-				<param  name="Fahrenheit" type="string"></param>
-				<param  name="test" type="boolean"></param>
-				<return_method name="FahrenheitToCelsiusResponse">
-					<return_param name="FahrenheitToCelsiusResult" type="string"></return_param>
-				</return_method>
-			</method>
-			
-			<method name="CelsiusToFahrenheit" soapAction="https://www.w3schools.com/xml/CelsiusToFahrenheit">
-				<param  name="Celsius" type="string"></param>
-				<return_method name="CelsiusToFahrenheitResponse">
-					<return_param name="CelsiusToFahrenheitResult" type="string"></return_param>
-				</return_method>
-			</method>
-			
-		</service>
+	<definition wsdl="http://www.webservicex.net/airport.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
+		<service name="airport" port_name="airportSoap">
+			<method name="GetAirportInformationByCountry" />			
+			<method name="getAirportInformationByAirportCode" />			
+			<method name="getAirportInformationByCityOrAirportName" />			
+			<method name="getAirportInformationByISOCountryCode" />		
+		</service>	
 	</definition>
+
+	<definition wsdl="http://www.webservicex.net/country.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">		
+		<service name="country" port_name="countrySoap">
+			<method name="GetCountries" />			
+			<method name="GetCurrencies" />			
+			<method name="GetCountryByCountryCode" />			
+			<method name="GetISOCountryCodeByCountyName" />			
+		</service>		
+	</definition>
+
+	<definition wsdl="http://www.webservicex.net/periodictable.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
+		<service name="periodictable" port_name="periodictableSoap">		
+			<method name="GetAtomicNumber" />			
+			<method name="GetAtomicWeight" />	
+			<method name="GetAtoms" />			
+			<method name="GetElementSymbol" />					
+		</service>
+	</definition> 
 	
-	<definition targetNamespace="http://webservices.gcomputer.net/">
-		<service name="KnowledgeLeak" location="http://www.gcomputer.net/webservices/knowledge.asmx">
-			<method name="Knowledge" soapAction="http://webservices.gcomputer.net/Knowledge">
-				<param  name="generation" type="int"></param>
-				<return_method name="KnowledgeResponse">
-					<return_param name="KnowledgeResult" type="double"></return_param>
-				</return_method>
-			</method>
-			
-			<method name="AboutKnowledgeLeak" soapAction="http://webservices.gcomputer.net/AboutKnowledgeLeak">
-				<return_method name="AboutKnowledgeLeakResponse">
-					<return_param name="AboutKnowledgeLeakResult" type="string"></return_param>
-				</return_method>
-			</method>
+	<definition wsdl="http://www.gcomputer.net/webservices/knowledge.asmx?WSDL" targetNamespace="http://webservices.gcomputer.net/">
+		<service name="KnowledgeLeak" port_name="KnowledgeLeakSoap">
+			<method name="Knowledge" />			
+			<method name="AboutKnowledgeLeak" />
 		</service>
-	</definition>
+	</definition> 
+
 	
-	<definition targetNamespace="http://www.webserviceX.NET">
-		<service name="Airport Information Webservice" location="http://www.webservicex.net/airport.asmx">
-			<method name="GetAirportInformationByCountry">
-				<param name="country" type="string"/>
-				<return_method name="GetAirportInformationByCountryResponse">
-					<return_param name="GetAirportInformationByCountryResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="getAirportInformationByAirportCode">
-				<param name="airportCode" type="string"/>
-				<return_method name="getAirportInformationByAirportCodeResponse">
-					<return_param name="getAirportInformationByAirportCodeResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="getAirportInformationByCityOrAirportName">
-				<param name="cityOrAirportName" type="string"/>
-				<return_method name="getAirportInformationByCityOrAirportNameResponse">
-					<return_param name="getAirportInformationByCityOrAirportNameResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="getAirportInformationByISOCountryCode">
-				<param name="CountryAbbrviation" type="string"/>
-				<return_method name="getAirportInformationByISOCountryCodeResponse">
-					<return_param name="getAirportInformationByISOCountryCodeResult" type="string"/>
-				</return_method>
-			</method>			
-			
+	<definition wsdl="http://www.webservicex.net/globalweather.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
+		<service name="GlobalWeather" port_name="GlobalWeatherSoap">
+			<method name="GetCitiesByCountry" />			
+			<method name="GetWeather" />
 		</service>
-		
-		<service name="Country Details" location="http://www.webservicex.net/country.asmx">
-			<method name="GetCountries">
-				<return_method name="GetCountriesResponse">
-					<return_param name="GetCountriesResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="GetCurrencies">
-				<return_method name="GetCurrenciesResponse">
-					<return_param name="GetCurrenciesResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="GetCountryByCountryCode">
-				<param name="CountryCode" type="string"/>
-				<return_method name="GetCountryByCountryCodeResponse">
-					<return_param name="GetCountryByCountryCodeResult" type="string"/>
-				</return_method>
-			</method>
-			
-			<method name="GetISOCountryCodeByCountyName">
-				<param name="CountryName" type="string"/>
-				<return_method name="GetISOCountryCodeByCountyNameResponse">
-					<return_param name="GetISOCountryCodeByCountyNameResult" type="string"/>
-				</return_method>
-			</method>
-			
+	</definition> 
+
+	<!--
+	<definition wsdl="https://www.w3schools.com/xml/tempconvert.asmx" targetNamespace="https://www.w3schools.com/xml/">
+		<service name="TempConvert" port_name="TempConvertSoap">
+			<method name="FahrenheitToCelsius" />			
+			<method name="CelsiusToFahrenheit" />
 		</service>
-		
-		
-	</definition>
+	</definition> 
+	-->
+
 </serviceConfig>

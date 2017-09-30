@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cServiceNames = new System.Windows.Forms.ComboBox();
             this.layoutMethodNames = new System.Windows.Forms.FlowLayoutPanel();
             this.layoutParameterNames = new System.Windows.Forms.FlowLayoutPanel();
@@ -36,11 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lblSoapResponse = new System.Windows.Forms.Label();
             this.lblSoapResponseValue = new System.Windows.Forms.Label();
-            this.dgvDataResponse = new System.Windows.Forms.DataGridView();
             this.tvDisplayResponse = new System.Windows.Forms.TreeView();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvDataResponse)).BeginInit();
             this.SuspendLayout();
             // 
             // cServiceNames
@@ -54,23 +50,24 @@
             // 
             // layoutMethodNames
             // 
+            this.layoutMethodNames.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.layoutMethodNames.Location = new System.Drawing.Point(12, 88);
             this.layoutMethodNames.Name = "layoutMethodNames";
-            this.layoutMethodNames.Size = new System.Drawing.Size(685, 140);
+            this.layoutMethodNames.Size = new System.Drawing.Size(708, 140);
             this.layoutMethodNames.TabIndex = 1;
             // 
             // layoutParameterNames
             // 
             this.layoutParameterNames.Location = new System.Drawing.Point(12, 280);
             this.layoutParameterNames.Name = "layoutParameterNames";
-            this.layoutParameterNames.Size = new System.Drawing.Size(581, 34);
+            this.layoutParameterNames.Size = new System.Drawing.Size(708, 214);
             this.layoutParameterNames.TabIndex = 2;
             // 
             // bHttpPostButton
             // 
-            this.bHttpPostButton.Location = new System.Drawing.Point(13, 325);
+            this.bHttpPostButton.Location = new System.Drawing.Point(12, 512);
             this.bHttpPostButton.Name = "bHttpPostButton";
-            this.bHttpPostButton.Size = new System.Drawing.Size(120, 23);
+            this.bHttpPostButton.Size = new System.Drawing.Size(708, 23);
             this.bHttpPostButton.TabIndex = 3;
             this.bHttpPostButton.Text = "POST";
             this.bHttpPostButton.UseVisualStyleBackColor = true;
@@ -106,15 +103,6 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Choose a Web Service:";
             // 
-            // lblSoapResponse
-            // 
-            this.lblSoapResponse.AutoSize = true;
-            this.lblSoapResponse.Location = new System.Drawing.Point(13, 366);
-            this.lblSoapResponse.Name = "lblSoapResponse";
-            this.lblSoapResponse.Size = new System.Drawing.Size(91, 13);
-            this.lblSoapResponse.TabIndex = 7;
-            this.lblSoapResponse.Text = "The response is...";
-            // 
             // lblSoapResponseValue
             // 
             this.lblSoapResponseValue.AutoSize = true;
@@ -123,36 +111,20 @@
             this.lblSoapResponseValue.Size = new System.Drawing.Size(0, 13);
             this.lblSoapResponseValue.TabIndex = 8;
             // 
-            // dgvDataResponse
-            // 
-            this.dgvDataResponse.AllowUserToAddRows = false;
-            this.dgvDataResponse.AllowUserToDeleteRows = false;
-            this.dgvDataResponse.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dgvDataResponse.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dgvDataResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDataResponse.Location = new System.Drawing.Point(12, 444);
-            this.dgvDataResponse.Name = "dgvDataResponse";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvDataResponse.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvDataResponse.Size = new System.Drawing.Size(685, 203);
-            this.dgvDataResponse.TabIndex = 9;
-            // 
             // tvDisplayResponse
             // 
             this.tvDisplayResponse.Location = new System.Drawing.Point(739, 20);
             this.tvDisplayResponse.Name = "tvDisplayResponse";
-            this.tvDisplayResponse.Size = new System.Drawing.Size(655, 627);
+            this.tvDisplayResponse.Size = new System.Drawing.Size(655, 519);
             this.tvDisplayResponse.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1406, 659);
+            this.ClientSize = new System.Drawing.Size(1398, 547);
             this.Controls.Add(this.tvDisplayResponse);
-            this.Controls.Add(this.dgvDataResponse);
             this.Controls.Add(this.lblSoapResponseValue);
-            this.Controls.Add(this.lblSoapResponse);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -162,7 +134,6 @@
             this.Controls.Add(this.cServiceNames);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvDataResponse)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,9 +148,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblSoapResponse;
         private System.Windows.Forms.Label lblSoapResponseValue;
-        private System.Windows.Forms.DataGridView dgvDataResponse;
         private System.Windows.Forms.TreeView tvDisplayResponse;
     }
 }

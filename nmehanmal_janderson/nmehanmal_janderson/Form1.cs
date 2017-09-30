@@ -5,13 +5,16 @@ using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace nmehanmal_janderson
 {
     public partial class Form1 : Form
     {
         private XmlDocument origConfigFile;
-        private SoapClient  httpSoapClient;
+        private SoapClient httpSoapClient;
+
+        private const string configFilePath = "../../WSDLConfiguration.xml";
 
         public Form1()
         {
@@ -23,10 +26,10 @@ namespace nmehanmal_janderson
             origConfigFile = new XmlDocument();
             httpSoapClient = new SoapClient();
 
-            origConfigFile.Load("../../WSDLConfiguration.xml"); //Obtain XML config file
+            origConfigFile.Load(configFilePath);
 
             //Fill the Combobox dropdown with the available web services
-            httpSoapClient.GetWebServicesAndMethods(origConfigFile);   
+            httpSoapClient.GetWebServicesAndMethods(origConfigFile);
 
             //Load dropdown with list
             cServiceNames.DataSource = httpSoapClient.WebServiceList;
@@ -41,37 +44,41 @@ namespace nmehanmal_janderson
             layoutParameterNames.Controls.Clear();
 
             //Insert method names as radio buttons to choose from
-            XmlNode node = origConfigFile.SelectSingleNode(string.Format("//*[@name = '{0}']", cServiceNames.Text.ToString()));
+            XElement root = XElement.Load(new XmlNodeReader(origConfigFile));
 
-            foreach(XmlNode tmpNode in (node.SelectNodes("method") as XmlNodeList))
+            foreach (XElement service in root.Elements("definition").Elements("service").Where((obj) => obj.Attribute("name").Value == cServiceNames.Text.ToString()))
             {
-                RadioButton rButton = new RadioButton();
+                foreach (XElement tmpXElementNode in service.Elements())
+                {
+                    RadioButton rButton = new RadioButton();
 
-                rButton.AutoSize = true;
-                rButton.Tag = tmpNode; //To be accessed from the lambda expression
-                rButton.Text = tmpNode.Attributes["name"].Value;
-                rButton.Click += (sender, e) => {
-                    //Clear out layout
-                    layoutParameterNames.Controls.Clear();
+                    rButton.AutoSize = true;
+                    rButton.Tag  = tmpXElementNode; //To be accessed from the lambda expression
+                    rButton.Text = tmpXElementNode.Attribute("name").Value;
 
-                    //Insert the validation for the parameters associated with the method
-                    foreach (XmlNode innerNode in (((sender as RadioButton).Tag as XmlNode).SelectNodes("param") as XmlNodeList))
-                    {
-                        Label textLabel = new Label();
-                        textLabel.Text = innerNode.Attributes["name"].Value + ':';
+                    rButton.Click += (sender, e) => {
+                        layoutParameterNames.Controls.Clear(); //Clear out layout
 
-                        TextBox textBox = new TextBox();
-                        textBox.Name = innerNode.Attributes["type"].Value + "_" + innerNode.Attributes["name"].Value;
+                        //Insert the validation for the parameters associated with the method
+                        foreach (XElement innerElement in ((sender as RadioButton).Tag as XElement).Elements("param"))
+                        {
+                            Label textLabel = new Label();
+                            textLabel.Text = innerElement.Attribute("name").Value + ':';
 
-                        //Add controls to layout
-                        layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox });
-                    }
+                            TextBox textBox = new TextBox();
+                            textBox.Name = innerElement.Attribute("type").Value + "_" + innerElement.Attribute("name").Value;
 
-                    bHttpPostButton.Enabled = true; //True because Method is chosen and Parameters are shown
-                };
+                            layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox }); //Add controls to layout
+                        }
 
-                layoutMethodNames.Controls.Add(rButton);
-            }        
+                        bHttpPostButton.Enabled = true; //True because Method is chosen and Parameters are shown
+                    };
+
+                    layoutMethodNames.Controls.Add(rButton);
+                }
+            }
+
+
         }
 
 
@@ -84,7 +91,7 @@ namespace nmehanmal_janderson
             GenerateRadioButtonsForMethods(); //Generate the methods
 
             bHttpPostButton.Enabled = false; //Fresh start, disable post button
-            
+
             lblSoapResponseValue.Text = "";
         }
 
@@ -97,13 +104,13 @@ namespace nmehanmal_janderson
             //Get selected method
             var rButtonChecked = layoutMethodNames.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
             bool isDataValid = true;
-            List<string> errorList = new List<string>(); 
+            List<string> errorList = new List<string>();
 
             //Get input parameters
             Dictionary<string, object> paramMap = new Dictionary<string, object>();
 
             foreach (Control paramControl in layoutParameterNames.Controls)
-            {              
+            {
                 if (!((paramControl.GetType()).Equals(typeof(Label))))
                 {
                     //First validate it
@@ -121,7 +128,7 @@ namespace nmehanmal_janderson
                         //Check if the proper value has in put in
                         if (dataType == "string")
                         {
-                            if(Regex.IsMatch(paramControl.Text, "(\\d+)|[_,+/\\?!=@#$%^&*();<>\"':.]"))
+                            if (Regex.IsMatch(paramControl.Text, "(\\d+)|[_+/\\?!=@#$%^&*();<>\"':]"))
                             {
                                 isDataValid = false;
                                 errorList.Add(string.Format("[{0}] parameter may only contain alphabets!", ctrlName));
@@ -149,7 +156,7 @@ namespace nmehanmal_janderson
                 }
             }
 
-            if(isDataValid == true)
+            if (isDataValid == true)
             {
                 httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref this.tvDisplayResponse); //Post SOAP response message
             }
@@ -158,11 +165,11 @@ namespace nmehanmal_janderson
                 //Display error due to invalid data
                 string errMessage = "";
 
-                foreach(string str in errorList)
+                foreach (string str in errorList)
                 {
                     errMessage += str + '\n';
                 }
-                
+
                 MessageBox.Show(errMessage);
             }
         }

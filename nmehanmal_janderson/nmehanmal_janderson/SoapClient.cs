@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Xml;
@@ -44,7 +46,7 @@ namespace nmehanmal_janderson
                     {
                         if (serviceNode.Attributes["name"].Value == serviceName)
                         {
-                            location = serviceNode.Attributes["location"].Value; 
+                            location = serviceNode.Attributes["location"].Value;
                             url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
 
                             foreach (XmlNode methodNode in serviceNode.SelectNodes("method"))
@@ -106,7 +108,7 @@ namespace nmehanmal_janderson
 
                         XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName);
                         // We are expecting one node so if that is the result we proceed down the happy path.
-                        if(nodes.Count == 1)
+                        if (nodes.Count == 1)
                         {
                             XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
                             if (xmlResponseSoapMessage != null)
@@ -157,7 +159,7 @@ namespace nmehanmal_janderson
             {
                 MessageBox.Show("SOAP Response XML Parsing Error: " + xmlEx.Message);
             }
-            catch(InvalidDataException dataEx)
+            catch (InvalidDataException dataEx)
             {
                 MessageBox.Show("Invalid Soap Response Format: " + dataEx.Message);
             }
@@ -169,7 +171,8 @@ namespace nmehanmal_janderson
             return;
         }
 
-        
+
+
         public void ParseXmlSoapResponse(ref TreeView tvDisplayResponse, XmlNode root, TreeNode tParentNode)
         {
             if (root is XmlElement)
@@ -199,10 +202,23 @@ namespace nmehanmal_janderson
             {
                 tParentNode.Nodes.Add(root.Value);
             }
-        }
-         
 
-        
+            if(tvDisplayResponse.Nodes.Count == 0)
+            {
+                TreeNode newNode = tvDisplayResponse.Nodes.Add(root.Name);
+                string result = "No results found!";
+                
+                if(root.InnerText != "")
+                {
+                    result = root.InnerText;    
+                }
+
+                newNode.Nodes.Add(result);
+            }
+        }
+
+
+
         public XmlDocument ValidateXml(string xml)
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -264,21 +280,190 @@ namespace nmehanmal_janderson
         }
 
 
+
         public void GetWebServicesAndMethods(XmlDocument xmlDoc)
         {
-            // in here i can deterine the name of the respone
-            XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");
+            //First look at the WSDL file and get all the information that is necessary 
 
-            foreach (XmlNode tmpNode in nodeList)
+            try
             {
-                foreach (XmlNode serviceNode in (tmpNode.SelectNodes("service") as XmlNodeList))
+                foreach (XmlNode definitionNode in xmlDoc.GetElementsByTagName("definition"))
                 {
-                    WebServiceList.Add(serviceNode.Attributes["name"].Value);
+                    foreach (XmlNode serviceNode in definitionNode.SelectNodes("service"))
+                    {                     
+                        //Now parse through the WSDL
+                        XElement root = XElement.Load(definitionNode.Attributes["wsdl"].Value); 
+                        XNamespace wsdl = "http://schemas.xmlsoap.org/wsdl/";
+                        XNamespace s = "http://www.w3.org/2001/XMLSchema";
+
+                        IEnumerable<XElement> service = from element in root.Elements(wsdl + "service") where (string)element.Attribute("name") == serviceNode.Attributes["name"].Value select element; //Find relevant service tag
+                        IEnumerable<XElement> port = from element in service.Elements(wsdl + "port") where (string)element.Attribute("name") == serviceNode.Attributes["port_name"].Value select element; //Find relevant port tag
+
+                        //Get the location and add it to the service location attribute
+                        var soapAddress = port.Descendants().First().Attribute("location");
+                        XmlAttribute attr = xmlDoc.CreateAttribute("location");
+                        attr.InnerText = soapAddress.Value.ToString();
+                        serviceNode.Attributes.Append(attr);
+
+                        //Now loop through all the methods, get the return type, data types, etc
+                        foreach (XmlNode methodName in serviceNode.SelectNodes("method"))
+                        {
+                            string responseMethod = "";
+                            string requestMethod = "";
+                            string soapRequestMethodName = "";
+                            string soapResponseMethodName = "";
+
+                            //Grab the input and output method names
+
+                            IEnumerable<XElement> portType = from element in root.Elements(wsdl + "portType") where (string)element.Attribute("name") == serviceNode.Attributes["port_name"].Value select element; //Find relevant portType tag
+                            IEnumerable<XElement> operation = from element in portType.Elements(wsdl + "operation") where (string)element.Attribute("name") == methodName.Attributes["name"].Value select element; //Find relevant operation tag
+
+                            foreach (XElement element in operation.Descendants())
+                            {
+                                //Request
+                                if ((XName)element.Name.LocalName == "input")
+                                {
+                                    //Get the value
+                                    string tmp = element.Attribute("message").Value.ToString();
+                                    //Get rid of the namespace
+                                    requestMethod = tmp.Split(':').Last();
+                                }
+
+                                //Response
+                                if ((XName)element.Name.LocalName == "output")
+                                {
+                                    //Get the value
+                                    string tmp = element.Attribute("message").Value.ToString();
+                                    //Get rid of the namespace
+                                    responseMethod = tmp.Split(':').Last();
+                                }
+                            }
+
+                            //Now get the parameters for the request and response method (Ones used for SOAP messages)                    
+                            IEnumerable<XElement> requestMessage = from element in root.Elements(wsdl + "message") where (string)element.Attribute("name") == requestMethod select element; //Find relevant message tag
+
+                            foreach (XElement element in requestMessage.Descendants())
+                            {
+                                if ((XName)element.Name.LocalName == "part")
+                                {
+                                    soapRequestMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                }
+                            }
+
+                            IEnumerable<XElement> responseMessage = from element in root.Elements(wsdl + "message") where (string)element.Attribute("name") == responseMethod select element; //Find relevant message tag
+
+                            foreach (XElement element in responseMessage.Descendants())
+                            {
+                                if ((XName)element.Name.LocalName == "part")
+                                {
+                                    soapResponseMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                }
+                            }
+
+                            //Get the parameters and it's parameters
+                            //Change the namespace (s is used instead)
+                            //(ParamName, DataType) => Dictionary
+                            Dictionary<string, string> reqParameters = new Dictionary<string, string>();
+                            Dictionary<string, string> resParameters = new Dictionary<string, string>();
+
+                            //REQUEST PARAM
+                            foreach (XElement paramElements in (from element in root.Descendants(s + "element") where (string)element.Attribute("name") == soapRequestMethodName select element).Descendants())
+                            {
+                                if ((XName)paramElements.Name.LocalName == "element")
+                                {
+                                    reqParameters.Add(paramElements.Attribute("name").Value.ToString(), paramElements.Attribute("type").Value.ToString().Split(':').Last());
+                                }
+                            }
+
+
+                            //RESPONSE PARAM
+                            foreach (XElement paramElements in (from element in root.Descendants(s + "element") where (string)element.Attribute("name") == soapResponseMethodName select element).Descendants())
+                            {
+                                if ((XName)paramElements.Name.LocalName == "element")
+                                {
+                                    resParameters.Add(paramElements.Attribute("name").Value.ToString(), paramElements.Attribute("type").Value.ToString().Split(':').Last());
+                                }
+                            }
+
+                            //First insert the request parameters
+                            foreach (KeyValuePair<string, string> entry in reqParameters)
+                            {
+                                // do something with entry.Value or entry.Key
+                                XmlNode xmlParam = xmlDoc.CreateNode("element", "param", "");
+
+                                //Name
+                                XmlAttribute newAttrName = xmlDoc.CreateAttribute("name");
+                                newAttrName.InnerText = entry.Key;
+
+                                //Datatype
+                                XmlAttribute newAttrDataType = xmlDoc.CreateAttribute("type");
+                                newAttrDataType.InnerText = entry.Value;
+
+                                xmlParam.Attributes.Append(newAttrName);
+                                xmlParam.Attributes.Append(newAttrDataType);
+
+                                methodName.AppendChild(xmlParam);
+                            }
+
+                            //Insert return method
+                            XmlNode xmlReturnMethod = xmlDoc.CreateNode("element", "return_method", "");
+
+                            //Return method name
+                            XmlAttribute newReturnMethodAttrName = xmlDoc.CreateAttribute("name");
+                            newReturnMethodAttrName.InnerText = soapResponseMethodName;
+
+                            xmlReturnMethod.Attributes.Append(newReturnMethodAttrName);
+
+                            XmlNode retMethod = methodName.AppendChild(xmlReturnMethod);
+
+                            //RETURN PARAM
+                            foreach (KeyValuePair<string, string> entry in resParameters)
+                            {
+                                // do something with entry.Value or entry.Key
+                                XmlNode xmlParam = xmlDoc.CreateNode("element", "return_param", "");
+
+                                //Name
+                                XmlAttribute newReturnAttrName = xmlDoc.CreateAttribute("name");
+                                newReturnAttrName.InnerText = entry.Key;
+
+                                //Datatype
+                                XmlAttribute newReturnAttrDataType = xmlDoc.CreateAttribute("type");
+                                newReturnAttrDataType.InnerText = entry.Value;
+
+                                xmlParam.Attributes.Append(newReturnAttrName);
+                                xmlParam.Attributes.Append(newReturnAttrDataType);
+
+                                retMethod.AppendChild(xmlParam);
+                            }
+
+
+                        }  //Method tag loop
+                    }  //Service tag loop
+                } //Definition tag loop
+
+                //xmlDoc.Save("TESTING_2.xml"); //REMOVE THIS AFTER
+
+                // in here i can deterine the name of the respone
+                XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");
+
+                foreach (XmlNode tmpNode in nodeList)
+                {
+                    foreach (XmlNode serviceNode in (tmpNode.SelectNodes("service") as XmlNodeList))
+                    {
+                        WebServiceList.Add(serviceNode.Attributes["name"].Value);
+                    }
                 }
+
             }
-        }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Unable to parse the WSDL file.");
+            }
+
+        } //End of method
 
 
 
     }
+
 }
