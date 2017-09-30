@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 
+
 namespace nmehanmal_janderson
 {
     class SoapClient
@@ -113,12 +114,10 @@ namespace nmehanmal_janderson
                             XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
                             if (xmlResponseSoapMessage != null)
                             {
-                                //myTable = ParseXmlSoapResponse(xmlResponseSoapMessage);
                                 ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
                             }
                             else
                             {
-                                //Create the table row and column on the fly 
                                 TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
                                 newNode.Nodes.Add(nodes[0].InnerText);
                             }
@@ -135,16 +134,16 @@ namespace nmehanmal_janderson
                             }
                             else
                             {
-                                List<object> faultInfo = new List<object>();
-
-                                //populate the soap fault headings into the table and capture the fault info in a list
-                                foreach (XmlNode childNode in nodes[0].ChildNodes)
+                                XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
+                                if(xmlResponseSoapMessage != null)
                                 {
-                                    //myTable.Columns.Add(childNode.Name);
-                                    faultInfo.Add(childNode.InnerText);
+                                    ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
                                 }
-
-                                //myTable.Rows.Add(faultInfo.ToArray());
+                                else
+                                {
+                                    TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
+                                    newNode.Nodes.Add(nodes[0].InnerText);
+                                }
                             }
                         }
                         else
