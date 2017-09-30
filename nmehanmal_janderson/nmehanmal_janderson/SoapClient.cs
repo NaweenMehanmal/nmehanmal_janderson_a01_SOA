@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+    Filename: SoapClient.cs
+    By: Naween M and Jeremy A
+    Assignment: Assignment 2 SOA
+    Date: Sept 28, 2017
+    Description: Handles all SOAP messaging communication, parses the WSDL file appropriately to fit our needs and returns the data to the main form 
+    to display to the user in an acceptable format 
+*/
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;

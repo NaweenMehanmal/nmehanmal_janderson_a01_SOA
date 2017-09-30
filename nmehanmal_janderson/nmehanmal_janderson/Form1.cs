@@ -1,4 +1,12 @@
-﻿using System.Windows.Forms;
+﻿/*
+    Filename: Form1.cs
+    By: Naween M and Jeremy A
+    Assignment: Assignment 2 SOA
+    Date: Sept 28, 2017
+    Description: Main form to do basic parameter validation and invoke an HTTP Post to a web server. The data returned is parsed and displayed to a TreeView for the user
+    to view. The form also retrieves the information gathered in the appropriate configuration file to dictate the UI and SOAP messaging, avoiding hardcoding. 
+*/
+using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
 using System.Collections.Generic;
