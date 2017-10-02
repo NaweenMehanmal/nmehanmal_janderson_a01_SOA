@@ -136,10 +136,10 @@ namespace nmehanmal_janderson
                         //Check if the proper value has in put in
                         if (dataType == "string")
                         {
-                            if (Regex.IsMatch(paramControl.Text, "(\\d+)|[_+/\\?!=@#$%^&*();<>\"':]"))
+                            if (Regex.IsMatch(paramControl.Text, "(\\d+)|[_+/\\?!=@#$%^&*();<>\":]"))
                             {
                                 isDataValid = false;
-                                errorList.Add(string.Format("[{0}] parameter may only contain alphabets!", ctrlName));
+                                errorList.Add(string.Format("[{0}] parameter may only contain alphabets! (Exception are [. , '])", ctrlName));
                             }
                         }
                         else if (dataType == "int" || dataType == "double")

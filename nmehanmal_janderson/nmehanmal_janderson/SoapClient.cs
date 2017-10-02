@@ -320,6 +320,10 @@ namespace nmehanmal_janderson
                             string soapRequestMethodName = "";
                             string soapResponseMethodName = "";
 
+                            //(ParamName, DataType) => Dictionary
+                            Dictionary<string, string> reqParameters = new Dictionary<string, string>();
+                            Dictionary<string, string> resParameters = new Dictionary<string, string>();
+
                             //Grab the input and output method names
 
                             IEnumerable<XElement> portType = from element in root.Elements(wsdl + "portType") where (string)element.Attribute("name") == serviceNode.Attributes["port_name"].Value select element; //Find relevant portType tag
@@ -353,7 +357,15 @@ namespace nmehanmal_janderson
                             {
                                 if ((XName)element.Name.LocalName == "part")
                                 {
-                                    soapRequestMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                    if(element.Attributes("element").Any() == true)
+                                    {
+                                        soapRequestMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                    } 
+                                    else if(element.Attributes("type").Any() == true)
+                                    {
+                                        //Since the type is mentioned here get the parameter
+                                        reqParameters.Add(element.Attribute("name").Value.ToString(), element.Attribute("type").Value.ToString().Split(':').Last());
+                                    }
                                 }
                             }
 
@@ -363,15 +375,20 @@ namespace nmehanmal_janderson
                             {
                                 if ((XName)element.Name.LocalName == "part")
                                 {
-                                    soapResponseMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                    if (element.Attributes("element").Any() == true)
+                                    {
+                                        soapResponseMethodName = element.Attribute("element").Value.ToString().Split(':').Last();
+                                    }
+                                    else if (element.Attributes("type").Any() == true)
+                                    {
+                                        //Since the type is mentioned here get the parameter name
+                                        resParameters.Add(element.Attribute("name").Value.ToString(), element.Attribute("type").Value.ToString().Split(':').Last());
+                                    }
                                 }
                             }
 
                             //Get the parameters and it's parameters
                             //Change the namespace (s is used instead)
-                            //(ParamName, DataType) => Dictionary
-                            Dictionary<string, string> reqParameters = new Dictionary<string, string>();
-                            Dictionary<string, string> resParameters = new Dictionary<string, string>();
 
                             //REQUEST PARAM
                             foreach (XElement paramElements in (from element in root.Descendants(s + "element") where (string)element.Attribute("name") == soapRequestMethodName select element).Descendants())
@@ -448,7 +465,7 @@ namespace nmehanmal_janderson
                     }  //Service tag loop
                 } //Definition tag loop
 
-                //xmlDoc.Save("TESTING_2.xml"); //REMOVE THIS AFTER
+                xmlDoc.Save("TESTING_2.xml"); //REMOVE THIS AFTER
 
                 // in here i can deterine the name of the respone
                 XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");

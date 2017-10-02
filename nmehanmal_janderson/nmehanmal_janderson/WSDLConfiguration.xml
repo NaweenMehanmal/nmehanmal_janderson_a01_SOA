@@ -34,13 +34,28 @@
 		</service>
 	</definition> 
 
-	
+	<!--
 	<definition wsdl="http://www.webservicex.net/globalweather.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
 		<service name="GlobalWeather" port_name="GlobalWeatherSoap">
 			<method name="GetCitiesByCountry" />			
 			<method name="GetWeather" />
 		</service>
 	</definition> 
+
+	<definition wsdl="http://www.soapclient.com/xml/soapresponder.wsdl" targetNamespace="http://www.SoapClient.com/xml/SoapResponder.wsdl">
+		<service name="SoapResponder" port_name="SoapResponderPortType">
+			<method name="Method1" />			
+		</service>
+	</definition> 
+
+	<definition wsdl="http://www.dneonline.com/calculator.asmx?WSDL" targetNamespace="http://tempuri.org/">
+		<service name="Calculator" port_name="CalculatorSoap">
+			<method name="Add" />			
+			<method name="Subtract" />		
+			<method name="Divide" />		
+			<method name="Multiply" />		
+		</service>
+	</definition> -->
 
 	<!--
 	<definition wsdl="https://www.w3schools.com/xml/tempconvert.asmx" targetNamespace="https://www.w3schools.com/xml/">
