@@ -72,7 +72,8 @@ namespace nmehanmal_janderson
                         {                           
 
                             Label textLabel = new Label();
-                            textLabel.Text = innerElement.Attribute("name").Value + ':';
+                            textLabel.Text = string.Format("{0} ({1}) :", innerElement.Attribute("name").Value, innerElement.Attribute("type").Value);
+                            textLabel.AutoSize = true; 
 
                             TextBox textBox = new TextBox();
                             textBox.Name = innerElement.Attribute("type").Value + "_" + innerElement.Attribute("name").Value;
@@ -141,7 +142,7 @@ namespace nmehanmal_janderson
                         //Check if the proper value has in put in
                         if (dataType == "string")
                         {
-                            if (Regex.IsMatch(paramControl.Text, "(\\d+)|[_+/\\?!=@#$%^&*();<>\":]"))
+                            if (Regex.IsMatch(paramControl.Text, "[_+/\\?!=@#$%^&*();<>\":]"))
                             {
                                 isDataValid = false;
                                 errorList.Add(string.Format("[{0}] parameter may only contain alphabets! (Exception are [. , '])", ctrlName));

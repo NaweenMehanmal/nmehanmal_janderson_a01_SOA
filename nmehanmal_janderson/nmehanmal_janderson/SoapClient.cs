@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -37,7 +36,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse)
+        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse, ref DataGrid dgView)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -162,14 +161,47 @@ namespace nmehanmal_janderson
                     }
                 }
             }
-            catch (XmlException xmlEx)
+            catch (WebException webEx)
             {
-                MessageBox.Show("SOAP Response XML Parsing Error: " + xmlEx.Message);
-            }
-            catch (InvalidDataException dataEx)
-            {
-                MessageBox.Show("Invalid Soap Response Format: " + dataEx.Message);
-            }
+                //Log the error on the client side, possible SOAP fault 
+                try
+                {
+                    string errResponseBody = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                    string soapFaultMsg  = "";
+                    string soapFaultCode = "";
+
+                    XElement soapXML = XElement.Parse(errResponseBody);
+
+                    //Fault Code
+                    IEnumerable<XElement> tmpFaultCode = soapXML.DescendantsAndSelf("faultcode");
+                    soapFaultCode = string.Concat(tmpFaultCode.Nodes());
+
+                    //Fault Message
+                    IEnumerable<XElement> tmpFaultStr = soapXML.DescendantsAndSelf("faultstring");                    
+                    soapFaultMsg = string.Concat(tmpFaultStr.Nodes());
+
+                    //Determine if this is a SOAP fault or not
+                    using (StreamWriter log = new StreamWriter("../../client-errors.log", true))
+                    {
+                        log.WriteLine("Date       : " + DateTime.Now);
+                        log.WriteLine("Http Status: " + webEx.Message);
+                        log.WriteLine("Fault Code : " + soapFaultCode.Replace(":", " "));
+                        log.WriteLine("Description: " + soapFaultMsg);
+                        log.WriteLine();
+                    }
+
+                    //Display the SOAP fault on the DataGrid also
+
+
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to parse web exception");
+                }         
+            }           
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
