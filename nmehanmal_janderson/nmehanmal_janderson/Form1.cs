@@ -69,15 +69,20 @@ namespace nmehanmal_janderson
 
                         //Insert the validation for the parameters associated with the method
                         foreach (XElement innerElement in ((sender as RadioButton).Tag as XElement).Elements("param"))
-                        {
+                        {                           
+
                             Label textLabel = new Label();
                             textLabel.Text = innerElement.Attribute("name").Value + ':';
 
                             TextBox textBox = new TextBox();
                             textBox.Name = innerElement.Attribute("type").Value + "_" + innerElement.Attribute("name").Value;
 
-                            layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox }); //Add controls to layout
+                            textLabel.Margin = new Padding(0, 15, 0, 0);
+                        
+                            layoutParameterNames.Controls.AddRange(new Control[] { textLabel, textBox }); //Add controls to layout                
                         }
+
+                        layoutParameterNames.FlowDirection = FlowDirection.TopDown;
 
                         bHttpPostButton.Enabled = true; //True because Method is chosen and Parameters are shown
                     };

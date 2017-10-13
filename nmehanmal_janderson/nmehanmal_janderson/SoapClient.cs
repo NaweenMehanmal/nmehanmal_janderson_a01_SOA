@@ -465,8 +465,6 @@ namespace nmehanmal_janderson
                     }  //Service tag loop
                 } //Definition tag loop
 
-                xmlDoc.Save("TESTING_2.xml"); //REMOVE THIS AFTER
-
                 // in here i can deterine the name of the respone
                 XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");
 

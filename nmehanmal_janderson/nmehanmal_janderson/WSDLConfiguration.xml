@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
+
+<definition wsdl="http://localhost:1953/Case.asmx?WSDL" targetNamespace="http://localhost">
+	<service name="Case" port_name="CaseSoap">
+		<method name="CaseConvert" />			
+	</service>	
+</definition>
+
+<definition wsdl="http://localhost:1953/Loan.asmx?WSDL" targetNamespace="http://localhost">
+	<service name="Loan" port_name="LoanSoap">
+		<method name="LoanPayment" />			
+	</service>	
+</definition>
+
+<definition wsdl="http://localhost:1953/Stocks.asmx?WSDL" targetNamespace="http://localhost">
+	<service name="Stocks" port_name="StocksSoap">  
+		<method name="GetQuote" />	 		
+	</service>	
+</definition>
+
+<!--
+
 	<definition wsdl="http://www.webservicex.net/airport.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
 		<service name="airport" port_name="airportSoap">
 			<method name="GetAirportInformationByCountry" />			
@@ -34,36 +55,6 @@
 		</service>
 	</definition> 
 
-	<!--
-	<definition wsdl="http://www.webservicex.net/globalweather.asmx?WSDL" targetNamespace="http://www.webserviceX.NET">
-		<service name="GlobalWeather" port_name="GlobalWeatherSoap">
-			<method name="GetCitiesByCountry" />			
-			<method name="GetWeather" />
-		</service>
-	</definition> 
-
-	<definition wsdl="http://www.soapclient.com/xml/soapresponder.wsdl" targetNamespace="http://www.SoapClient.com/xml/SoapResponder.wsdl">
-		<service name="SoapResponder" port_name="SoapResponderPortType">
-			<method name="Method1" />			
-		</service>
-	</definition> 
-
-	<definition wsdl="http://www.dneonline.com/calculator.asmx?WSDL" targetNamespace="http://tempuri.org/">
-		<service name="Calculator" port_name="CalculatorSoap">
-			<method name="Add" />			
-			<method name="Subtract" />		
-			<method name="Divide" />		
-			<method name="Multiply" />		
-		</service>
-	</definition> -->
-
-	<!--
-	<definition wsdl="https://www.w3schools.com/xml/tempconvert.asmx" targetNamespace="https://www.w3schools.com/xml/">
-		<service name="TempConvert" port_name="TempConvertSoap">
-			<method name="FahrenheitToCelsius" />			
-			<method name="CelsiusToFahrenheit" />
-		</service>
-	</definition> 
-	-->
+-->
 
 </serviceConfig>
