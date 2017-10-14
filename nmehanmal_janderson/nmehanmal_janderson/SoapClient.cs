@@ -116,44 +116,27 @@ namespace nmehanmal_janderson
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         XElement soapXML = XElement.Parse(reader.ReadToEnd());
+                        XElement soapResponse = soapXML.DescendantsAndSelf(tns + returnResponseName).Elements().First();
 
-                        Debug.WriteLine("---");
-
-                        XNamespace ns = "http://localhost/webservice/";
-
-                        foreach (XElement yeah in soapXML.DescendantsAndSelf(ns + returnResponseName))
+                        if (soapResponse.Descendants().Count() > 0)
                         {
-                            Debug.WriteLine(yeah.Name);
+                            //Implication of a returned struct
+
                             
-                        }
-
-                        if (1 > 0) // We are expecting one node so if that is the result we proceed down the happy path.
-                        {
-                            //XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerXml);
-
-                            if (null != null)
-                            {
-                                //Implication of a returned struct
-                                //ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
-                            }
-                            else
-                            {
-                                //Implication of a single primitive data value
-                                //DataTable responseTable = new DataTable();
-
-                                //responseTable.Columns.AddRange(new DataColumn[] {
-                                //    new DataColumn(nodes[0].InnerText)
-                                //});
-
-                                //responseTable.Rows.Add(nodes[0].InnerText);
-
-                                //dgView.DataSource = responseTable;
-                                //dgView.AutoResizeColumns();
-                            }
                         }
                         else
                         {
-                            throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
+                            //Implication of a single primitive data value
+                            DataTable responseTable = new DataTable();
+
+                            responseTable.Columns.AddRange(new DataColumn[] {
+                                new DataColumn(soapResponse.Name.ToString())
+                            });
+
+                            responseTable.Rows.Add(soapResponse.Name.ToString());
+
+                            dgView.DataSource = responseTable;
+                            dgView.AutoResizeColumns();
                         }
                     }
                 }
