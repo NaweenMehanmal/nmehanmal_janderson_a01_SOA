@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -24,9 +25,11 @@ namespace nmehanmal_janderson
 
         //const
         public const string xmlns_soap = "http://schemas.xmlsoap.org/soap/envelope/";
-        public const string xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
-        public const string xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
+        public const string xmlns_xsd  = "http://www.w3.org/2001/XMLSchema";
+        public const string xmlns_xsi  = "http://www.w3.org/2001/XMLSchema-instance";
         public const string return_param_tag = "return_method/return_param";
+        public const string return_response_tag = "return_method";
+
 
         public List<string> WebServiceList { get; set; }
 
@@ -36,7 +39,7 @@ namespace nmehanmal_janderson
         }
 
 
-        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref TreeView tvDisplayResponse, ref DataGrid dgView)
+        public void SoapRequestAndResponse(XmlDocument xmlDoc, string serviceName, string methodName, Dictionary<string, object> paramMap, ref DataGridView dgView)
         {
             //Generate the SOAP request message body
             XmlDocument soapEnvXml = new XmlDocument();
@@ -45,22 +48,26 @@ namespace nmehanmal_janderson
             string location = "";
             string url = "";
             string returnParamName = "";
+            string returnResponseName = "";
+            string tns = "";
 
             try
             {
                 foreach (XmlNode defNode in xmlDoc.GetElementsByTagName("definition"))
-                {
+                {                   
                     foreach (XmlNode serviceNode in defNode.SelectNodes("service"))
                     {
                         if (serviceNode.Attributes["name"].Value == serviceName)
-                        {
+                        {                          
+                            tns = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
                             location = serviceNode.Attributes["location"].Value;
                             url = serviceNode.ParentNode.Attributes["targetNamespace"].Value;
 
                             foreach (XmlNode methodNode in serviceNode.SelectNodes("method"))
                             {
                                 if (methodNode.Attributes["name"].Value == methodName)
-                                {
+                                {                                    
+                                    returnResponseName = methodNode.SelectSingleNode(return_response_tag).Attributes["name"].Value;
                                     returnParamName = methodNode.SelectSingleNode(return_param_tag).Attributes["name"].Value;
                                     break;
                                 }
@@ -102,60 +109,50 @@ namespace nmehanmal_janderson
                 }
 
                 //Response
-                tvDisplayResponse.Nodes.Clear(); //Clear the TreeView
+                dgView.DataSource = null; //Clear the DataGridView
 
                 using (WebResponse response = httpRequest.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
-                        string xmlString = reader.ReadToEnd();
+                        XElement soapXML = XElement.Parse(reader.ReadToEnd());
 
-                        XmlDocument responseDoc = new XmlDocument();
+                        Debug.WriteLine("---");
 
-                        responseDoc.LoadXml(xmlString);
+                        XNamespace ns = "http://localhost/webservice/";
 
-                        XmlNodeList nodes = responseDoc.GetElementsByTagName(returnParamName);
-                        // We are expecting one node so if that is the result we proceed down the happy path.
-                        if (nodes.Count == 1)
+                        foreach (XElement yeah in soapXML.DescendantsAndSelf(ns + returnResponseName))
                         {
-                            XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
-                            if (xmlResponseSoapMessage != null)
-                            {
-                                ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
-                            }
-                            else
-                            {
-                                TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
-                                newNode.Nodes.Add(nodes[0].InnerText);
-                            }
+                            Debug.WriteLine(yeah.Name);
+                            
                         }
-                        // If no nodes are found it could be that there is a SOAP fault so we search for that tag in a similar way.
-                        else if (nodes.Count == 0)
-                        {
-                            // search now instead for a soap:Fault tag. if found it should contain the fault code and message.
-                            nodes = responseDoc.GetElementsByTagName("soap:Fault");
 
-                            if (nodes.Count != 1)
+                        if (1 > 0) // We are expecting one node so if that is the result we proceed down the happy path.
+                        {
+                            //XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerXml);
+
+                            if (null != null)
                             {
-                                throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
+                                //Implication of a returned struct
+                                //ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
                             }
                             else
                             {
-                                XmlDocument xmlResponseSoapMessage = ValidateXml(nodes[0].InnerText.Replace("\r\n", string.Empty));
-                                if(xmlResponseSoapMessage != null)
-                                {
-                                    ParseXmlSoapResponse(ref tvDisplayResponse, xmlResponseSoapMessage.FirstChild, null);
-                                }
-                                else
-                                {
-                                    TreeNode newNode = tvDisplayResponse.Nodes.Add(nodes[0].Name);
-                                    newNode.Nodes.Add(nodes[0].InnerText);
-                                }
+                                //Implication of a single primitive data value
+                                //DataTable responseTable = new DataTable();
+
+                                //responseTable.Columns.AddRange(new DataColumn[] {
+                                //    new DataColumn(nodes[0].InnerText)
+                                //});
+
+                                //responseTable.Rows.Add(nodes[0].InnerText);
+
+                                //dgView.DataSource = responseTable;
+                                //dgView.AutoResizeColumns();
                             }
                         }
                         else
                         {
-                            // There should be no situation where there are multiple response nodes but i guess we can handle that in case.
                             throw new InvalidDataException("Improper SOAP Response format! Cannot extract response.");
                         }
                     }
@@ -175,6 +172,7 @@ namespace nmehanmal_janderson
                     //Fault Code
                     IEnumerable<XElement> tmpFaultCode = soapXML.DescendantsAndSelf("faultcode");
                     soapFaultCode = string.Concat(tmpFaultCode.Nodes());
+                    soapFaultCode = soapFaultCode.Replace(":", " ");
 
                     //Fault Message
                     IEnumerable<XElement> tmpFaultStr = soapXML.DescendantsAndSelf("faultstring");                    
@@ -185,17 +183,24 @@ namespace nmehanmal_janderson
                     {
                         log.WriteLine("Date       : " + DateTime.Now);
                         log.WriteLine("Http Status: " + webEx.Message);
-                        log.WriteLine("Fault Code : " + soapFaultCode.Replace(":", " "));
+                        log.WriteLine("Fault Code : " + soapFaultCode);
                         log.WriteLine("Description: " + soapFaultMsg);
                         log.WriteLine();
                     }
 
                     //Display the SOAP fault on the DataGrid also
+                    DataTable responseTable = new DataTable();
 
+                    responseTable.Columns.AddRange(new DataColumn[] {
+                        new DataColumn("Soap Code"),
+                        new DataColumn("Soap Fault Description"),
+                        new DataColumn("Http Response")
+                    });
 
-
-
-
+                    responseTable.Rows.Add(soapFaultCode, soapFaultMsg, webEx.Message);
+                    
+                    dgView.DataSource = responseTable;
+                    dgView.AutoResizeColumns();
                 }
                 catch (Exception ex)
                 {
@@ -496,6 +501,8 @@ namespace nmehanmal_janderson
                         }  //Method tag loop
                     }  //Service tag loop
                 } //Definition tag loop
+
+                xmlDoc.Save("test.xml");
 
                 // in here i can deterine the name of the respone
                 XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");

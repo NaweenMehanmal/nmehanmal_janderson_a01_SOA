@@ -172,7 +172,7 @@ namespace nmehanmal_janderson
 
             if (isDataValid == true)
             {
-                httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref this.tvDisplayResponse); //Post SOAP response message
+                httpSoapClient.SoapRequestAndResponse(origConfigFile, cServiceNames.Text, rButtonChecked.Text, paramMap, ref dgSoapResponseView); //Post SOAP response message
             }
             else
             {

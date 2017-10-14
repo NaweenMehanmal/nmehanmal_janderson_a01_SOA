@@ -36,7 +36,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblSoapResponseValue = new System.Windows.Forms.Label();
-            this.tvDisplayResponse = new System.Windows.Forms.TreeView();
+            this.dgSoapResponseView = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgSoapResponseView)).BeginInit();
             this.SuspendLayout();
             // 
             // cServiceNames
@@ -111,19 +112,20 @@
             this.lblSoapResponseValue.Size = new System.Drawing.Size(0, 13);
             this.lblSoapResponseValue.TabIndex = 8;
             // 
-            // tvDisplayResponse
+            // dgSoapResponseView
             // 
-            this.tvDisplayResponse.Location = new System.Drawing.Point(739, 20);
-            this.tvDisplayResponse.Name = "tvDisplayResponse";
-            this.tvDisplayResponse.Size = new System.Drawing.Size(655, 519);
-            this.tvDisplayResponse.TabIndex = 10;
+            this.dgSoapResponseView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgSoapResponseView.Location = new System.Drawing.Point(741, 12);
+            this.dgSoapResponseView.Name = "dgSoapResponseView";
+            this.dgSoapResponseView.Size = new System.Drawing.Size(645, 523);
+            this.dgSoapResponseView.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1398, 547);
-            this.Controls.Add(this.tvDisplayResponse);
+            this.Controls.Add(this.dgSoapResponseView);
             this.Controls.Add(this.lblSoapResponseValue);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -134,6 +136,7 @@
             this.Controls.Add(this.cServiceNames);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.dgSoapResponseView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,7 +152,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSoapResponseValue;
-        private System.Windows.Forms.TreeView tvDisplayResponse;
+        private System.Windows.Forms.DataGridView dgSoapResponseView;
     }
 }
 
