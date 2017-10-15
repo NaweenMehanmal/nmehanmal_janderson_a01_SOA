@@ -1,0 +1,90 @@
+Date       : 10/14/2017 11:38:11 PM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid Data. All entered values must be greater than zero (&lt;0).
+
+Date       : 10/15/2017 2:26:02 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Invalid Data. Input values provided were too large.
+
+Date       : 10/15/2017 2:36:50 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid Data. All entered values must be greater than zero (&lt;0).
+
+Date       : 10/15/2017 2:45:04 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Invalid Data. Input values provided were too large.
+
+Date       : 10/15/2017 2:46:30 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Invalid Data. Input values provided were too large.
+
+Date       : 10/15/2017 3:14:29 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:16:51 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:22:02 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:24:29 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:27:42 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid data, ticker symbol may only contain letters and numbers
+
+Date       : 10/15/2017 3:29:04 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:30:22 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid data, ticker symbol may only contain letters and numbers
+
+Date       : 10/15/2017 3:31:55 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:32:31 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid data, ticker symbol may only contain letters and numbers
+
+Date       : 10/15/2017 3:33:08 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:33:15 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Server
+Description: Exception: Server was unable to process request. ---&gt; Input string was not in a correct format.
+
+Date       : 10/15/2017 3:41:14 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid data, [incoming] should only be expecting letters only.
+
+Date       : 10/15/2017 3:43:18 AM
+Http Status: The remote server returned an error: (500) Internal Server Error.
+Fault Code : soap Client
+Description: Invalid data, [incoming] should only be expecting letters only.
+
