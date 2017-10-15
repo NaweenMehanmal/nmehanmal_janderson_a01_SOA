@@ -54,21 +54,21 @@
             this.layoutMethodNames.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.layoutMethodNames.Location = new System.Drawing.Point(12, 88);
             this.layoutMethodNames.Name = "layoutMethodNames";
-            this.layoutMethodNames.Size = new System.Drawing.Size(708, 140);
+            this.layoutMethodNames.Size = new System.Drawing.Size(355, 140);
             this.layoutMethodNames.TabIndex = 1;
             // 
             // layoutParameterNames
             // 
             this.layoutParameterNames.Location = new System.Drawing.Point(12, 280);
             this.layoutParameterNames.Name = "layoutParameterNames";
-            this.layoutParameterNames.Size = new System.Drawing.Size(708, 214);
+            this.layoutParameterNames.Size = new System.Drawing.Size(355, 214);
             this.layoutParameterNames.TabIndex = 2;
             // 
             // bHttpPostButton
             // 
             this.bHttpPostButton.Location = new System.Drawing.Point(12, 512);
             this.bHttpPostButton.Name = "bHttpPostButton";
-            this.bHttpPostButton.Size = new System.Drawing.Size(708, 23);
+            this.bHttpPostButton.Size = new System.Drawing.Size(355, 23);
             this.bHttpPostButton.TabIndex = 3;
             this.bHttpPostButton.Text = "POST";
             this.bHttpPostButton.UseVisualStyleBackColor = true;
@@ -114,17 +114,19 @@
             // 
             // dgSoapResponseView
             // 
+            this.dgSoapResponseView.AllowUserToAddRows = false;
+            this.dgSoapResponseView.AllowUserToDeleteRows = false;
             this.dgSoapResponseView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgSoapResponseView.Location = new System.Drawing.Point(741, 12);
+            this.dgSoapResponseView.Location = new System.Drawing.Point(373, 12);
             this.dgSoapResponseView.Name = "dgSoapResponseView";
-            this.dgSoapResponseView.Size = new System.Drawing.Size(645, 523);
+            this.dgSoapResponseView.Size = new System.Drawing.Size(613, 523);
             this.dgSoapResponseView.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1398, 547);
+            this.ClientSize = new System.Drawing.Size(999, 547);
             this.Controls.Add(this.dgSoapResponseView);
             this.Controls.Add(this.lblSoapResponseValue);
             this.Controls.Add(this.label3);

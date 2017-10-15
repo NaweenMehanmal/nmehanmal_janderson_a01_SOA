@@ -142,15 +142,15 @@ namespace nmehanmal_janderson
                         //Check if the proper value has in put in
                         if (dataType == "string")
                         {
-                            if (Regex.IsMatch(paramControl.Text, "[_+/\\?!=@#$%^&*();<>\":]"))
+                            if (Regex.IsMatch(paramControl.Text, "[_+/\\?!=@#$%^&*();<>\":.,']"))
                             {
                                 isDataValid = false;
-                                errorList.Add(string.Format("[{0}] parameter may only contain alphabets! (Exception are [. , '])", ctrlName));
+                                errorList.Add(string.Format("[{0}] parameter may only contain letters and numbers!", ctrlName));
                             }
                         }
-                        else if (dataType == "int" || dataType == "double")
+                        else if (dataType == "unsignedInt" || dataType == "int" || dataType == "double")
                         {
-                            if (Regex.IsMatch(paramControl.Text, "\\D+"))
+                            if (Regex.IsMatch(paramControl.Text, "[^-]\\D+"))
                             {
                                 isDataValid = false;
                                 errorList.Add(string.Format("[{0}] parameter may only contain numbers!", ctrlName));

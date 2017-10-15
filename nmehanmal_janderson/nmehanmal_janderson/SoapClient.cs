@@ -115,29 +115,36 @@ namespace nmehanmal_janderson
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
+                        XNamespace ns = tns;
                         XElement soapXML = XElement.Parse(reader.ReadToEnd());
-                        XElement soapResponse = soapXML.DescendantsAndSelf(tns + returnResponseName).Elements().First();
+                        XElement soapResponse = soapXML.Descendants(ns + returnParamName).First();
 
+                        DataTable responseTable = new DataTable();
+                        List<DataColumn> colList = new List<DataColumn>();
+                        List<object> rowVals = new List<object>();
+
+                        //Find out if a struct was returned
                         if (soapResponse.Descendants().Count() > 0)
-                        {
-                            //Implication of a returned struct
+                        {                            
+                            foreach (XElement col in soapResponse.Descendants())
+                            {
+                                colList.Add(new DataColumn(col.Name.LocalName.ToString()));
+                                rowVals.Add(col.Value);
+                            }
 
-                            
+                            responseTable.Columns.AddRange(colList.ToArray()); //Set the columns
+                            responseTable.Rows.Add(rowVals.ToArray()); //Add the row                           
                         }
                         else
                         {
-                            //Implication of a single primitive data value
-                            DataTable responseTable = new DataTable();
-
-                            responseTable.Columns.AddRange(new DataColumn[] {
-                                new DataColumn(soapResponse.Name.ToString())
-                            });
-
-                            responseTable.Rows.Add(soapResponse.Name.ToString());
-
-                            dgView.DataSource = responseTable;
-                            dgView.AutoResizeColumns();
-                        }
+                            responseTable.Columns.Add(new DataColumn(soapResponse.Name.LocalName.ToString()));
+                            responseTable.Rows.Add(soapResponse.Value);
+                        }                     
+                        
+                        //Add the new data source
+                        dgView.DataSource = responseTable;
+                        dgView.AutoResizeColumns();
+                        //dgView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                     }
                 }
             }
@@ -176,14 +183,14 @@ namespace nmehanmal_janderson
 
                     responseTable.Columns.AddRange(new DataColumn[] {
                         new DataColumn("Soap Code"),
-                        new DataColumn("Soap Fault Description"),
-                        new DataColumn("Http Response")
+                        new DataColumn("Soap Fault Description")
                     });
 
-                    responseTable.Rows.Add(soapFaultCode, soapFaultMsg, webEx.Message);
+                    responseTable.Rows.Add(soapFaultCode, soapFaultMsg);
                     
                     dgView.DataSource = responseTable;
                     dgView.AutoResizeColumns();
+                    //dgView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
                 catch (Exception ex)
                 {
@@ -485,7 +492,7 @@ namespace nmehanmal_janderson
                     }  //Service tag loop
                 } //Definition tag loop
 
-                xmlDoc.Save("test.xml");
+                //xmlDoc.Save("test.xml");
 
                 // in here i can deterine the name of the respone
                 XmlNodeList nodeList = xmlDoc.GetElementsByTagName("definition");

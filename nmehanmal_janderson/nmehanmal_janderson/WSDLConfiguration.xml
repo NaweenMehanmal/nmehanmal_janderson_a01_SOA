@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serviceConfig>
 
-<!--
+	<definition wsdl="http://localhost/TextService/TextService.asmx?WSDL" targetNamespace="http://localhost/webservice/">
+		<service name="Case" port_name="CaseSoap">
+			<method name="CaseConvert" />			
+		</service>	
+	</definition> 
 
-<definition wsdl="http://localhost:1953/Case.asmx?WSDL" targetNamespace="http://localhost">
-	<service name="Case" port_name="CaseSoap">
-		<method name="CaseConvert" />			
-	</service>	
-</definition>
+	<definition wsdl="http://localhost/VinniesLoanService/VinniesLoanService.asmx?WSDL" targetNamespace="http://localhost/webservice/">
+		<service name="Loan" port_name="LoanSoap">
+			<method name="LoanPayment" />			
+		</service>	
+	</definition>
 
-<definition wsdl="http://localhost:1953/Loan.asmx?WSDL" targetNamespace="http://localhost">
-	<service name="Loan" port_name="LoanSoap">
-		<method name="LoanPayment" />			
-	</service>	
-</definition> -->
-
-<definition wsdl="http://localhost:55059/Stocks.asmx?WSDL" targetNamespace="http://localhost/webservice/">
-	<service name="Stocks" port_name="StocksSoap">  
-		<method name="GetQuote" />	 		
-	</service>	
-</definition>
+	<definition wsdl="http://localhost/TickerTape/TickerTape.asmx?WSDL" targetNamespace="http://localhost/webservice/">
+		<service name="Stocks" port_name="StocksSoap">  
+			<method name="GetQuote" />	 		
+		</service>	
+	</definition> 
 
 <!--
 
